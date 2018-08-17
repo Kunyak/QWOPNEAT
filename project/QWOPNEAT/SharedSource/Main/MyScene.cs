@@ -1,4 +1,5 @@
 #region Using Statements
+using NEATLibrary;
 using System;
 using WaveEngine.Common;
 using WaveEngine.Common.Graphics;
@@ -18,7 +19,8 @@ namespace QWOPNEAT
     {
         protected override void CreateScene()
         {
-            this.Load(WaveContent.Scenes.MyScene);           
+            this.Load(WaveContent.Scenes.MyScene);
+            var asd = new Class1();
         }
     }
 }
