@@ -15,12 +15,12 @@ using WaveEngine.Framework.Services;
 
 namespace QWOPNEAT
 {
-    public class MyScene : Scene
+    public class GameplayScene : Scene
     {
         protected override void CreateScene()
         {
-            this.Load(WaveContent.Scenes.MyScene);
-            var asd = new Class1();
+            this.Load(WaveContent.Scenes.GameplayScene);
+            var asd = new TestClass();
         }
     }
 }

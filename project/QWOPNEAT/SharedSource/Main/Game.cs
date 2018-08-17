@@ -16,7 +16,7 @@ namespace QWOPNEAT
 
             this.Load(WaveContent.GameInfo);
 
-			ScreenContext screenContext = new ScreenContext(new MyScene());	
+			ScreenContext screenContext = new ScreenContext(new GameplayScene());	
 			WaveServices.ScreenContextManager.To(screenContext);
         }
     }

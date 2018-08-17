@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-// File generated on 2018. 08. 17. 15:06:41
+// File generated on 2018. 08. 17. 18:11:16
 namespace QWOPNEAT
 {
     using System;
@@ -19,6 +19,17 @@ namespace QWOPNEAT
         
         /// <summary> Path to Content/QWOPNEAT.wgame </summary>
         public const string GameInfo = "Content/QWOPNEAT.wgame";
+        
+        public sealed class Assets
+        {
+            
+            public sealed class Sprites
+            {
+                
+                /// <summary> Path to Content/Assets/Sprites/background.jpg </summary>
+                public const string background_jpg = "Content/Assets/Sprites/background.jpg";
+            }
+        }
         
         public sealed class RenderLayers
         {
@@ -45,8 +56,8 @@ namespace QWOPNEAT
         public sealed class Scenes
         {
             
-            /// <summary> Path to Content/Scenes/MyScene.wscene </summary>
-            public const string MyScene = "Content/Scenes/MyScene.wscene";
+            /// <summary> Path to Content/Scenes/GameplayScene.wscene </summary>
+            public const string GameplayScene = "Content/Scenes/GameplayScene.wscene";
         }
     }
 }
