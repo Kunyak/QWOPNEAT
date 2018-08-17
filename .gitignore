@@ -334,13 +334,20 @@ ASALocalRun/
 #Wave Editor intermediate folder
 generate.info
 generate.winfo
-Intermediate/Autoback/
-Intermediate/Autoback
-Intermediate/Autoback/*
-Intermediate/Content/*
-Intermediate/Content/
-Intermediate/Content
-SharedSource/Main/WaveContent.cs
+Intermediate/
+packages/
+.vs/
+
+
+.wetest
+wetest/
+
+WaveEngine.VisualTestManager/
+WaveEngine.WindowsTools/
+WaveEngine.LinuxTools/
+WaveEngine.MacTools/
+
+WaveContent.cs
 
 UpgradeLog.txt
 *backup.zip
