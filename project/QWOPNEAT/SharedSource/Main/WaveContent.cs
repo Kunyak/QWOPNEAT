@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-// File generated on 2018. 08. 17. 18:17:20
+// File generated on 2018. 08. 23. 19:26:26
 namespace QWOPNEAT
 {
     using System;
@@ -28,6 +28,44 @@ namespace QWOPNEAT
                 
                 /// <summary> Path to Content/Assets/Sprites/background.jpg </summary>
                 public const string background_jpg = "Content/Assets/Sprites/background.jpg";
+                
+                /// <summary> Path to Content/Assets/Sprites/ball_test.png </summary>
+                public const string ball_test_png = "Content/Assets/Sprites/ball_test.png";
+                
+                /// <summary> Path to Content/Assets/Sprites/ground_bottom2.png </summary>
+                public const string ground_bottom2_png = "Content/Assets/Sprites/ground_bottom2.png";
+                
+                /// <summary> Path to Content/Assets/Sprites/ground_top.png </summary>
+                public const string ground_top_png = "Content/Assets/Sprites/ground_top.png";
+                
+                public sealed class Character1
+                {
+                    
+                    /// <summary> Path to Content/Assets/Sprites/Character1/face_mask.png </summary>
+                    public const string face_mask_png = "Content/Assets/Sprites/Character1/face_mask.png";
+                    
+                    /// <summary> Path to Content/Assets/Sprites/Character1/leg_mask.png </summary>
+                    public const string leg_mask_png = "Content/Assets/Sprites/Character1/leg_mask.png";
+                    
+                    /// <summary> Path to Content/Assets/Sprites/Character1/texture.spritesheet </summary>
+                    public const string texture_spritesheet = "Content/Assets/Sprites/Character1/texture.spritesheet";
+                    
+                    /// <summary> Texture names from spritesheet Content/Assets/Sprites/Character1/texture.spritesheet </summary>
+                    public struct texture_spritesheet_TextureName
+                    {
+                        
+                        public const string face = "face";
+                        
+                        public const string leg = "leg";
+                    }
+                }
+            }
+            
+            public sealed class Prefabs
+            {
+                
+                /// <summary> Path to Content/Assets/Prefabs/Character01.wpref </summary>
+                public const string Character01 = "Content/Assets/Prefabs/Character01.wpref";
             }
         }
         
