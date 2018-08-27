@@ -28,7 +28,9 @@ namespace QWOPNEAT
         {
             this.Load(WaveContent.Scenes.GameplayScene);
             var asd = new TestClass();
-           // CreateDebugMode();
+            // CreateDebugMode();
+
+
         }
 
         private void CreateDebugMode()

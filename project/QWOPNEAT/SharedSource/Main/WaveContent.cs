@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-// File generated on 2018. 08. 23. 19:26:26
+// File generated on 2018. 08. 27. 19:02:47
 namespace QWOPNEAT
 {
     using System;
@@ -28,6 +28,9 @@ namespace QWOPNEAT
                 
                 /// <summary> Path to Content/Assets/Sprites/background.jpg </summary>
                 public const string background_jpg = "Content/Assets/Sprites/background.jpg";
+                
+                /// <summary> Path to Content/Assets/Sprites/background2.png </summary>
+                public const string background2_png = "Content/Assets/Sprites/background2.png";
                 
                 /// <summary> Path to Content/Assets/Sprites/ball_test.png </summary>
                 public const string ball_test_png = "Content/Assets/Sprites/ball_test.png";
