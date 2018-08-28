@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-// File generated on 2018. 08. 27. 19:02:47
+// File generated on 2018. 08. 28. 19:06:11
 namespace QWOPNEAT
 {
     using System;
@@ -62,6 +62,40 @@ namespace QWOPNEAT
                         public const string leg = "leg";
                     }
                 }
+                
+                public sealed class Character2
+                {
+                    
+                    /// <summary> Path to Content/Assets/Sprites/Character2/arm01down.png </summary>
+                    public const string arm01down_png = "Content/Assets/Sprites/Character2/arm01down.png";
+                    
+                    /// <summary> Path to Content/Assets/Sprites/Character2/arm01Up.png </summary>
+                    public const string arm01Up_png = "Content/Assets/Sprites/Character2/arm01Up.png";
+                    
+                    /// <summary> Path to Content/Assets/Sprites/Character2/arm2down.png </summary>
+                    public const string arm2down_png = "Content/Assets/Sprites/Character2/arm2down.png";
+                    
+                    /// <summary> Path to Content/Assets/Sprites/Character2/arm2up.png </summary>
+                    public const string arm2up_png = "Content/Assets/Sprites/Character2/arm2up.png";
+                    
+                    /// <summary> Path to Content/Assets/Sprites/Character2/bob.jpg </summary>
+                    public const string bob_jpg = "Content/Assets/Sprites/Character2/bob.jpg";
+                    
+                    /// <summary> Path to Content/Assets/Sprites/Character2/leg01down.png </summary>
+                    public const string leg01down_png = "Content/Assets/Sprites/Character2/leg01down.png";
+                    
+                    /// <summary> Path to Content/Assets/Sprites/Character2/leg02down.png </summary>
+                    public const string leg02down_png = "Content/Assets/Sprites/Character2/leg02down.png";
+                    
+                    /// <summary> Path to Content/Assets/Sprites/Character2/leg02up.png </summary>
+                    public const string leg02up_png = "Content/Assets/Sprites/Character2/leg02up.png";
+                    
+                    /// <summary> Path to Content/Assets/Sprites/Character2/leg1up.png </summary>
+                    public const string leg1up_png = "Content/Assets/Sprites/Character2/leg1up.png";
+                    
+                    /// <summary> Path to Content/Assets/Sprites/Character2/torso.png </summary>
+                    public const string torso_png = "Content/Assets/Sprites/Character2/torso.png";
+                }
             }
             
             public sealed class Prefabs
@@ -69,6 +103,9 @@ namespace QWOPNEAT
                 
                 /// <summary> Path to Content/Assets/Prefabs/Character01.wpref </summary>
                 public const string Character01 = "Content/Assets/Prefabs/Character01.wpref";
+                
+                /// <summary> Path to Content/Assets/Prefabs/Character02.wpref </summary>
+                public const string Character02 = "Content/Assets/Prefabs/Character02.wpref";
             }
         }
         

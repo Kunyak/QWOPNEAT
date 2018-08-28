@@ -58,20 +58,21 @@ namespace QWOPNEAT.Behaviours
                     }
                 }
                 // starts moving to that entity
-                var diff =  Tracked.X - trans.X;
-                if (Math.Abs(diff) > Threshold)
+                if (Tracked != null)
                 {
-                    trans.X += (diff / Math.Abs(diff)) * Speed;
+                    var diff = Tracked.X - trans.X;
+                    if (Math.Abs(diff) > Threshold)
+                    {
+                        trans.X += (diff / Math.Abs(diff)) * Speed;
+                    }
+                   
                 }
-                
-
+                else
+                {
+                    // if no entity is found the go to base pont
+                    trans.X = BaseX;
+                }
             }
-            else
-            {
-                // if no entity is found the go to base pont
-                trans.X = BaseX;
-            }
-
         }
     }
 }

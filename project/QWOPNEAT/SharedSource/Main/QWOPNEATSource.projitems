@@ -9,9 +9,9 @@
     <Import_RootNamespace>QWOPNEAT</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="$(MSBuildThisFileDirectory)Behaviours\BackgroundBehavior.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Behaviours\CameraFollowBehaviour.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Behaviours\PlayerBehaviourBasic.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Behaviours\PlayerTestHuman.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Game.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)GameplayScene.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)WaveContent.cs" />
