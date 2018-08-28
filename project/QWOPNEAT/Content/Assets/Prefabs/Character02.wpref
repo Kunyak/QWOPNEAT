@@ -5731,12 +5731,11 @@
         </d4p1:LinearVelocity>
         <d4p1:PhysicBodyType>Dynamic</d4p1:PhysicBodyType>
       </d3p1:Component>
-      <d3p1:Component xmlns:d4p1="http://schemas.datacontract.org/2004/07/QWOPNEAT.Behaviours" i:type="d4p1:PlayerTestHuman">
+      <d3p1:Component xmlns:d4p1="http://schemas.datacontract.org/2004/07/QWOPNEAT.Behaviours" i:type="d4p1:PlayerBehaviourHumanoid">
         <d3p1:UpdateOrder>0.5</d3p1:UpdateOrder>
         <d3p1:isDisabled>false</d3p1:isDisabled>
-        <d4p1:MaximumAngle>15</d4p1:MaximumAngle>
-        <d4p1:MotorSpeed>50</d4p1:MotorSpeed>
-        <d4p1:MotorTorque>500</d4p1:MotorTorque>
+        <GroundDeath xmlns="http://schemas.datacontract.org/2004/07/QWOPNEAT.Classes">true</GroundDeath>
+        <MotorSpeed xmlns="http://schemas.datacontract.org/2004/07/QWOPNEAT.Classes">45</MotorSpeed>
       </d3p1:Component>
     </d2p1:SerializeComponents>
   </EntityModel>

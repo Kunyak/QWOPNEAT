@@ -1,5 +1,5 @@
 ﻿<Prefab xmlns:i="http://www.w3.org/2001/XMLSchema-instance" xmlns="WaveEngine.Framework.Models.Assets">
-  <Id xmlns="WaveEngine.Framework.Models">2721d827-130b-4363-81f7-91c24972bc25</Id>
+  <Id xmlns="WaveEngine.Framework.Models">bd89e769-36c2-4e00-b00c-efd41ded0eee</Id>
   <EntityModel xmlns:d2p1="WaveEngine.Framework.Models.Entities">
     <d2p1:SerializeChildrens>
       <d2p1:BaseEntityModel i:type="d2p1:EntityModel">
@@ -2076,7 +2076,7 @@
         <d2p1:isStatic>false</d2p1:isStatic>
         <d2p1:isVisible>true</d2p1:isVisible>
         <d2p1:name>leg04</d2p1:name>
-        <d2p1:tag i:nil="true" />
+        <d2p1:tag></d2p1:tag>
         <d2p1:SerializeComponents xmlns:d5p1="WaveEngine.Framework">
           <d5p1:Component xmlns:d6p1="WaveEngine.Framework.Graphics" i:type="d6p1:Transform2D">
             <d6p1:LocalOrientation xmlns:d7p1="WaveEngine.Common.Math">
@@ -2086,8 +2086,8 @@
               <d7p1:Z>-0.7112903</d7p1:Z>
             </d6p1:LocalOrientation>
             <d6p1:LocalPosition xmlns:d7p1="WaveEngine.Common.Math">
-              <d7p1:X>21.1673145</d7p1:X>
-              <d7p1:Y>-157.697037</d7p1:Y>
+              <d7p1:X>21.1671829</d7p1:X>
+              <d7p1:Y>-157.697052</d7p1:Y>
               <d7p1:Z>0.100000009</d7p1:Z>
             </d6p1:LocalPosition>
             <d6p1:LocalScale xmlns:d7p1="WaveEngine.Common.Math">
@@ -3120,7 +3120,7 @@
               <d7p1:Z>-0.373473525</d7p1:Z>
             </d6p1:LocalOrientation>
             <d6p1:LocalPosition xmlns:d7p1="WaveEngine.Common.Math">
-              <d7p1:X>206.179749</d7p1:X>
+              <d7p1:X>206.179733</d7p1:X>
               <d7p1:Y>-98.2393</d7p1:Y>
               <d7p1:Z>0.100000009</d7p1:Z>
             </d6p1:LocalPosition>
@@ -5189,7 +5189,7 @@
         <d4p1:LocalPosition xmlns:d5p1="WaveEngine.Common.Math">
           <d5p1:X>0</d5p1:X>
           <d5p1:Y>0</d5p1:Y>
-          <d5p1:Z>-0.1</d5p1:Z>
+          <d5p1:Z>0</d5p1:Z>
         </d4p1:LocalPosition>
         <d4p1:LocalScale xmlns:d5p1="WaveEngine.Common.Math">
           <d5p1:X>0.25</d5p1:X>
@@ -6593,7 +6593,7 @@
           <d5p1:X>0</d5p1:X>
           <d5p1:Y>0</d5p1:Y>
         </d4p1:connectedAnchor>
-        <d4p1:connectedEntityPath>.leg05</d4p1:connectedEntityPath>
+        <d4p1:connectedEntityPath>.leg04</d4p1:connectedEntityPath>
         <d4p1:isActive>true</d4p1:isActive>
         <d4p1:enableLimits>true</d4p1:enableLimits>
         <d4p1:enableMotor>false</d4p1:enableMotor>
@@ -6623,6 +6623,14 @@
         <d4p1:motorSpeed>0</d4p1:motorSpeed>
         <d4p1:referenceAngle>-0.7655013</d4p1:referenceAngle>
         <d4p1:upperAngle>0.2617994</d4p1:upperAngle>
+      </d3p1:Component>
+      <d3p1:Component xmlns:d4p1="http://schemas.datacontract.org/2004/07/QWOPNEAT.Behaviours" i:type="d4p1:PlayerBehaviourBasic">
+        <d3p1:UpdateOrder>0.5</d3p1:UpdateOrder>
+        <d3p1:isDisabled>false</d3p1:isDisabled>
+        <GroundDeath xmlns="http://schemas.datacontract.org/2004/07/QWOPNEAT.Classes">true</GroundDeath>
+        <MotorSpeed xmlns="http://schemas.datacontract.org/2004/07/QWOPNEAT.Classes">45</MotorSpeed>
+        <d4p1:MaximumAngle>15</d4p1:MaximumAngle>
+        <d4p1:MotorTorque>500</d4p1:MotorTorque>
       </d3p1:Component>
     </d2p1:SerializeComponents>
   </EntityModel>
