@@ -118,6 +118,7 @@ namespace QWOPNEAT.Classes
 
         protected override void Update(TimeSpan gameTime)
         {
+            CheckFall();
 
             switch (ctrl)
             {
