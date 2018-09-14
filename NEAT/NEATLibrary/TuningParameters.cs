@@ -14,7 +14,7 @@ namespace NEATLibrary
 
         //mutation rates
         public static readonly double WEIGHT_MUTATION_RATE = 0.5f;
-        public static readonly double NEW_CONNECTION_RATE = 0.1f;
+        public static readonly double NEW_CONNECTION_RATE = 0.05f;
         public static readonly double NEW_NODE_RATE = 0.1f;
         public static readonly double NEW_WEIGHT_RATE = 0.1f;
 

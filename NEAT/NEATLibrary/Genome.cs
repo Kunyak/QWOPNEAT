@@ -32,8 +32,7 @@ namespace NEATLibrary
         {
             Nodes = new List<NodeGene>();
             Connections = new Dictionary<int, ConnectionGene>();
-            Nodes.Add(new NodeGene(NodeType.Bias, 0));
-            for (int i=1; i<= a+b; i++)
+            for (int i=0; i< a+b; i++)
             {
                 if (i < a)
                 {
@@ -54,11 +53,11 @@ namespace NEATLibrary
             {
                 MutateWeights();
             }
-            if (random.NextDouble() < TuningParameters.NEW_CONNECTION_RATE)
+            if (random.NextDouble() < TuningParameters.NEW_CONNECTION_RATE && Nodes.Count > 1);
             {
                 ConnectionMutation();
             }
-            if (random.NextDouble() < TuningParameters.NEW_NODE_RATE)
+            if (random.NextDouble() < TuningParameters.NEW_NODE_RATE && Connections.Count > 0)
             {
                 NodeMutation();
             }
@@ -83,7 +82,34 @@ namespace NEATLibrary
 
         private void ConnectionMutation()
         {
-            throw new NotImplementedException();
+
+            NodeGene inNode = Nodes[random.Next(0, Nodes.Count - 1)];
+            NodeGene outNode = Nodes[random.Next(0, Nodes.Count - 1)];
+
+            var connectable = inNode.canConnectTo(outNode);
+
+            if (connectable == -1)
+            {
+                return ;
+            }
+            double weight = random.NextDouble() * 2f - 1f; // initial weight is between -1 and 1
+            var inId = (connectable == 1) ? inNode.Id : outNode.Id;
+            var outId = (connectable == 1) ? outNode.Id : inNode.Id;
+            
+
+            foreach (ConnectionGene gene in Connections.Values)
+            {
+                if ( gene.isEqualNodes(inId,outId) ){
+                    return;
+                }
+            }
+
+
+            ConnectionGene newGene = new ConnectionGene(inId, outId, weight, true, Marker);
+            addConnectionGene(newGene);
+            return;
+
+
         }
 
         private void MutateWeights()
@@ -105,7 +131,7 @@ namespace NEATLibrary
 
         public void addNodeGene(NodeGene gene)
         {
-            Nodes.Add(gene.Id,gene);
+            Nodes.Add(gene);
         }
 
         public void addConnectionGene(ConnectionGene gene)
@@ -113,7 +139,64 @@ namespace NEATLibrary
             Connections.Add(gene.Innovation,gene);
         }
 
-        
+        public string toWebGraphviz()
+        {
+            string code = @"digraph GenomeMap {
+	                        node [shape = circle];
+                            subgraph cluster_0 {
+		                            style=filled;
+		                            color=lightgrey;
+		                            node [style=filled,color=white];";
+
+            // make sensoor type subgroup
+            foreach (NodeGene gene in Nodes)
+            {
+                if (gene.Type == NodeType.Sensor)
+                {
+                   code +=  gene.Id.ToString() + ";";
+                }
+            }
+
+            code += @"label = ""Sensor"";}
+                    subgraph cluster_1 {
+		                    node [style=filled];";
+            foreach (NodeGene gene in Nodes)
+            {
+                if (gene.Type == NodeType.Output)
+                {
+                    code += gene.Id.ToString() + ";";
+                }
+            }
+            code += @"label =""Output""; color = blue }
+                        subgraph cluster_2 {
+		                    node [style=filled, color=lightgrey];";
+            foreach (NodeGene gene in Nodes)
+            {
+                if (gene.Type == NodeType.Hidden)
+                {
+                    code += gene.Id.ToString() + ";";
+                }
+            }
+            code += @"label =""Hidden""; color = blue }";
+
+
+            foreach (ConnectionGene gene in Connections.Values)
+            {
+                if (gene.isEnabled)
+                {
+                    code += gene.inNode.ToString() + "->" + gene.outNode.ToString() + @"[ label = "" " + gene.Weight.ToString("0.00") + @" "" ];";
+                }
+                else
+                {
+                    code += gene.inNode.ToString() + "->" + gene.outNode.ToString() + @"[color=""0.002 0.999 0.999""];";
+                }
+            }
+
+            code += "}";
+
+            return code;
+
+        }
 
     }
 }

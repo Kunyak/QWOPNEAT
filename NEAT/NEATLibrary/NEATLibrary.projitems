@@ -9,6 +9,10 @@
     <Import_RootNamespace>NEATLibrary</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="$(MSBuildThisFileDirectory)TestClass.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ConnectionGene.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)GeneMarker.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Genome.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)NodeGene.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)TuningParameters.cs" />
   </ItemGroup>
 </Project>

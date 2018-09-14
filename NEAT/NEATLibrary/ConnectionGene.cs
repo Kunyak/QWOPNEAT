@@ -22,9 +22,19 @@ namespace NEATLibrary
             Innovation = marker.getMarker();
         }
 
-        public void Disable() // you cant re-enable a connection
+        public void Disable() 
         {
             isEnabled = false;
+        }
+
+        public bool isEqualNodes(ConnectionGene gene)
+        {
+            return( (inNode == gene.inNode && outNode == gene.outNode) || (inNode == gene.outNode && outNode == gene.inNode) );
+        }
+
+        public bool isEqualNodes(int _in, int _out)
+        {
+            return ((inNode == _in && outNode == _out) || (inNode == _out && outNode == _in));
         }
 
     }
