@@ -27,14 +27,29 @@ namespace NEATLibrary
             isEnabled = false;
         }
 
-        public bool isEqualNodes(ConnectionGene gene)
+        public bool isEqualNodes(ConnectionGene gene, bool isTwoWay)
         {
-            return( (inNode == gene.inNode && outNode == gene.outNode) || (inNode == gene.outNode && outNode == gene.inNode) );
+            if (isTwoWay)
+            {
+                return ((inNode == gene.inNode && outNode == gene.outNode) || (inNode == gene.outNode && outNode == gene.inNode));
+            }
+            else
+            {
+                return (inNode == gene.inNode && outNode == gene.outNode);
+            }
+            
         }
 
-        public bool isEqualNodes(int _in, int _out)
+        public bool isEqualNodes(int _in, int _out, bool isTwoWay)
         {
-            return ((inNode == _in && outNode == _out) || (inNode == _out && outNode == _in));
+            if (isTwoWay)
+            {
+                return ((inNode == _in && outNode == _out) || (inNode == _out && outNode == _in));
+            }
+            else
+            {
+                return (inNode == _in && outNode == _out);
+            }
         }
 
     }

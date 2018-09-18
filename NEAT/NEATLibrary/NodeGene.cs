@@ -17,11 +17,14 @@ namespace NEATLibrary
 
         public NodeType Type { get;}
         public int Id { get; }
+        public Double LayerQuotient { get;  }
 
-        public NodeGene(NodeType type, int id)
+
+        public NodeGene(NodeType type, int id, Double layer)
         {
             Type = type;
             Id = id;
+            LayerQuotient = layer;
         }
         /// <summary>
         /// Checks if there can be a connection originating from a node to the destination node
@@ -31,15 +34,21 @@ namespace NEATLibrary
         /// <returns></returns>
         public int canConnectTo(NodeGene destination)
         {
-            if ( (Type == destination.Type && this.Type != NodeType.Hidden) || (Id == destination.Id) )
+
+            if (destination.Type == NodeType.Sensor) // destination cant be sensor;
             {
-                return -1; // absolutely can't connect
+                return -1;
             }
 
-            if (Type > destination.Type) // can join, but a reverse is needed
+            if (Type == destination.Type && this.Type != NodeType.Hidden) // hidden and output neurons can't connect to the same type of neuron
+            {
+                return -1; // 
+            }
+
+            /*if ( (Type > destination.Type) || (LayerQuotient > destination.LayerQuotient) ) // can join, but a reverse is needed --> only used if you want Feed Forward Only ANN
             {
                 return 0;
-            }
+            }*/
 
             return 1;
         }

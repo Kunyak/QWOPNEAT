@@ -12,6 +12,7 @@ namespace NEATLibrary
         private Dictionary<int, ConnectionGene> Connections;
         private Random random;
         private GeneMarker Marker;
+        //private bool RNN;
 
         public Genome(int sensor, int output, GeneMarker gmarker)
         {
@@ -36,11 +37,11 @@ namespace NEATLibrary
             {
                 if (i < a)
                 {
-                    Nodes.Add(new NodeGene(NodeType.Sensor,i));
+                    Nodes.Add(new NodeGene(NodeType.Sensor,i,0));
                 }
                 else
                 {
-                    Nodes.Add( new NodeGene(NodeType.Output, i));
+                    Nodes.Add( new NodeGene(NodeType.Output, i,1));
                 }
             }
         }
@@ -69,7 +70,10 @@ namespace NEATLibrary
             ConnectionGene oldConnoection = Connections.ElementAt(random.Next(0, Connections.Count)).Value; // take a random connection     
             oldConnoection.Disable();
 
-            NodeGene newNode = new NodeGene(NodeType.Hidden,Nodes.Count);
+            NodeGene oldIn = Nodes[oldConnoection.inNode];
+            NodeGene oldOut = Nodes[oldConnoection.outNode];
+
+            NodeGene newNode = new NodeGene(NodeType.Hidden,Nodes.Count,(oldIn.LayerQuotient + oldOut.LayerQuotient)/2);
             ConnectionGene newConn1 = new ConnectionGene(oldConnoection.inNode, newNode.Id, oldConnoection.Weight, true, Marker);
             ConnectionGene newConn2 = new ConnectionGene(newNode.Id, oldConnoection.outNode, 1f , true, Marker);
 
@@ -92,14 +96,18 @@ namespace NEATLibrary
             {
                 return ;
             }
-            double weight = random.NextDouble() * 2f - 1f; // initial weight is between -1 and 1
-            var inId = (connectable == 1) ? inNode.Id : outNode.Id;
-            var outId = (connectable == 1) ? outNode.Id : inNode.Id;
-            
+            double weight = random.NextDouble() * 2f - 1f;
+            // initial weight is between -1 and 1
+            /* var inId = (connectable == 1) ? inNode.Id : outNode.Id; --> use for FF only ANN;
+            var outId = (connectable == 1) ? outNode.Id : inNode.Id;*/
 
-            foreach (ConnectionGene gene in Connections.Values)
+            var inId = inNode.Id;
+            var outId = outNode.Id;
+
+
+            foreach (ConnectionGene gene in Connections.Values) // Search for Same Connections
             {
-                if ( gene.isEqualNodes(inId,outId) ){
+                if ( gene.isEqualNodes(inId,outId,false) ){ // set true if you dont want 'bidirectional' connections
                     return;
                 }
             }

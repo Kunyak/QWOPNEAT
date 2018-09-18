@@ -17,6 +17,6 @@ namespace NEATLibrary
         public static readonly double NEW_CONNECTION_RATE = 0.05f;
         public static readonly double NEW_NODE_RATE = 0.1f;
         public static readonly double NEW_WEIGHT_RATE = 0.1f;
-
+        
     }
 }
