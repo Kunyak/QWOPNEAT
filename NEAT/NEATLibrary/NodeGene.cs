@@ -17,7 +17,7 @@ namespace NEATLibrary
 
         public NodeType Type { get;}
         public int Id { get; }
-        public Double LayerQuotient { get;  }
+        public Double LayerQuotient { get; set; }
 
 
         public NodeGene(NodeType type, int id, Double layer)
@@ -26,6 +26,14 @@ namespace NEATLibrary
             Id = id;
             LayerQuotient = layer;
         }
+
+        public NodeGene(NodeGene gene)
+        {
+            Type = gene.Type;
+            Id = gene.Id;
+            LayerQuotient = gene.LayerQuotient;
+        }
+
         /// <summary>
         /// Checks if there can be a connection originating from a node to the destination node
         /// 1 means its good, 0 means it has to be reversed, -1 means its never happenning

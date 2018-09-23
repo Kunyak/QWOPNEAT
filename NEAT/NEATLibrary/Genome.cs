@@ -8,10 +8,12 @@ namespace NEATLibrary
     class Genome
     {
 
-        private List<NodeGene> Nodes;
-        private Dictionary<int, ConnectionGene> Connections;
+        protected List<NodeGene> Nodes;
+        protected Dictionary<int, ConnectionGene> Connections;
         private Random random;
-        private GeneMarker Marker;
+        protected GeneMarker Marker;
+        public int nSensor { get; }
+        public int nOutput { get; }
         //private bool RNN;
 
         public Genome(int sensor, int output, GeneMarker gmarker)
@@ -19,13 +21,50 @@ namespace NEATLibrary
             initBaseNodes(sensor, output);
             Marker = gmarker;
             random = new Random();
+            nSensor = sensor;
+            nOutput = output;
         }
 
-        public Genome(int sensor, int output, GeneMarker gmarker, Random rnd)
+        /// <summary>
+        /// Crossover of two Genomes
+        /// </summary>
+        /// <param name="Pfittest"> Main structure will be similar to the fitter parents structure</param>
+        /// <param name="Plessfit"></param>
+        public Genome(Genome Pfittest, Genome Plessfit)
         {
-            initBaseNodes(sensor, output);
-            Marker = gmarker;
-            random = rnd;
+            //if (Pfittest.nOutput != Plessfit.nOutput || Pfittest.nSensor != Plessfit.nSensor) throw new Exception("Parent genomes has different basenodes");
+            initBaseNodes(0, 0);
+            Marker = Pfittest.Marker;
+            random = new Random();
+            
+           
+            // get nodes from fittest parent
+            foreach(NodeGene gene in Pfittest.Nodes)
+            {
+                Nodes.Add(new NodeGene(gene)); // clones the node genes of the fittest parent
+            }
+
+
+            foreach(var fitGene in Pfittest.Connections) // lining up the genes of each parent
+            {
+
+                var g1 = fitGene.Value;
+
+                if (Plessfit.Connections.ContainsKey(fitGene.Key)) // matching genes
+                {
+                    var g2 = Plessfit.Connections[fitGene.Key];
+                    var newGene = new ConnectionGene((random.NextDouble() < 0.5f)?g1:g2); // randomly choosing between parents genes
+                    addConnectionGene(newGene);
+                }
+                else // unmatching genes -- adding gene from the fittest parents
+                {
+                    addConnectionGene(new ConnectionGene(g1));
+                }
+
+            }
+
+
+
         }
 
 
@@ -37,11 +76,11 @@ namespace NEATLibrary
             {
                 if (i < a)
                 {
-                    Nodes.Add(new NodeGene(NodeType.Sensor,i,0));
+                    Nodes.Add(new NodeGene(NodeType.Sensor, i, 0));
                 }
                 else
                 {
-                    Nodes.Add( new NodeGene(NodeType.Output, i,1));
+                    Nodes.Add(new NodeGene(NodeType.Output, i, 1));
                 }
             }
         }
@@ -137,6 +176,8 @@ namespace NEATLibrary
             }
         }
 
+
+
         public void addNodeGene(NodeGene gene)
         {
             Nodes.Add(gene);
@@ -161,7 +202,7 @@ namespace NEATLibrary
             {
                 if (gene.Type == NodeType.Sensor)
                 {
-                   code +=  gene.Id.ToString() + ";";
+                   code +=  (gene.Id+1).ToString() + ";"; // add 1 so the output is similar to the one show in the original paper
                 }
             }
 
@@ -172,7 +213,7 @@ namespace NEATLibrary
             {
                 if (gene.Type == NodeType.Output)
                 {
-                    code += gene.Id.ToString() + ";";
+                    code += (gene.Id+1).ToString() + ";";
                 }
             }
             code += @"label =""Output""; color = blue }
@@ -182,7 +223,7 @@ namespace NEATLibrary
             {
                 if (gene.Type == NodeType.Hidden)
                 {
-                    code += gene.Id.ToString() + ";";
+                    code += (gene.Id+1).ToString() + ";";
                 }
             }
             code += @"label =""Hidden""; color = blue }";
@@ -192,11 +233,11 @@ namespace NEATLibrary
             {
                 if (gene.isEnabled)
                 {
-                    code += gene.inNode.ToString() + "->" + gene.outNode.ToString() + @"[ label = "" " + gene.Weight.ToString("0.00") + @" "" ];";
+                    code += (gene.inNode+1).ToString() + "->" + (gene.outNode+1).ToString() + @"[ label = "" " + gene.Weight.ToString("0.00") + @" "" ];";
                 }
                 else
                 {
-                    code += gene.inNode.ToString() + "->" + gene.outNode.ToString() + @"[color=""0.002 0.999 0.999""];";
+                    code += (gene.inNode+1).ToString() + "->" + (gene.outNode+1).ToString() + @"[color=""0.002 0.999 0.999""];";
                 }
             }
 

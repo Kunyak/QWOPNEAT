@@ -6,7 +6,7 @@ namespace NEATLibrary
 {
     class GeneMarker
     {
-        private int counter;
+        public int counter { get; private set; }
 
         public GeneMarker()
         {
