@@ -36,10 +36,9 @@ namespace NEATLibrary
 
         /// <summary>
         /// Checks if there can be a connection originating from a node to the destination node
-        /// 1 means its good, 0 means it has to be reversed, -1 means its never happenning
         /// </summary>
         /// <param name="destination"></param>
-        /// <returns></returns>
+        /// <returns>1 means its good, 0 means it has to be reversed, -1 means its never happenning</returns>
         public int canConnectTo(NodeGene destination)
         {
 

@@ -6,9 +6,10 @@ namespace NEATLibrary
 {
     class ConnectionGene
     {
+        
         public int inNode { get; }
         public int outNode { get; }
-        public Double Weight { get; set; }
+        public Double Weight;
         public bool isEnabled { get; private set; }
         public int Innovation { get; }
 
@@ -22,34 +23,14 @@ namespace NEATLibrary
             Innovation = marker.getMarker();
         }
 
-        /// <summary>
-        /// Clones an exsiting ConnectionGene
-        /// </summary>
-        /// <param name="gene"></param>
-        public ConnectionGene(ConnectionGene gene)
+
+        public ConnectionGene(ConnectionGene gene) // Cloning
         {
             inNode = gene.inNode;
             outNode = gene.outNode;
             Weight = gene.Weight;
             isEnabled = gene.isEnabled;
             Innovation = gene.Innovation;
-        }
-
-        /// <summary>
-        /// For testing purpose only! You should never set the innovation number manually
-        /// </summary>
-        /// <param name="_in"></param>
-        /// <param name="_out"></param>
-        /// <param name="_weight"></param>
-        /// <param name="_expressed"></param>
-        /// <param name="marker"></param>
-        public ConnectionGene(int _in, int _out, double _weight, bool _expressed, int marker) // for tersting purpose only
-        {
-            inNode = _in;
-            outNode = _out;
-            Weight = _weight;
-            isEnabled = _expressed;
-            Innovation = marker;
         }
 
         public void Disable() 
