@@ -1,5 +1,6 @@
 ﻿using NEATLibrary;
 using System;
+using System.Collections.Generic;
 
 namespace NEAT // this is for testing the NEAT-implementation without the game
 {
@@ -7,7 +8,7 @@ namespace NEAT // this is for testing the NEAT-implementation without the game
     {
         static void Main(string[] args)
         {
-             var m = new GeneMarker(10);
+            /*var m = new GeneMarker(10);
              Genome g1 = new Genome(3, 1, m);
              Genome g2 = new Genome(3, 1, m);
 
@@ -37,11 +38,48 @@ namespace NEAT // this is for testing the NEAT-implementation without the game
              Genome Child = new Genome(g1,g2);
 
              Console.WriteLine();
-             Console.WriteLine(Child.toWebGraphviz());
-             Console.WriteLine("asd");
+             Console.WriteLine(Genome.CompatibilityDistance(g1,g2));
+
+            var list = new List<int>();
+            list.Add(2);
+            list.Add(4);
+         ;
+            list.Add(5);
+   list.Add(1);
+            list.Add(0)
+            list.Sort();
+            list.RemoveRange(0,list.Count / 2);
+            Console.WriteLine(list[0]);*/
+
+
+            GeneMarker marker = new GeneMarker();
+            Genome starter = new Genome(5,10,marker);
+            Population pop = new Population(200, marker, starter);
+
+            for (int i= 0; i< 8; i++)
+            {
+                Console.WriteLine("gen{0}",i);
+                foreach (Genome g in pop.currentGeneration)
+                {
+                    FitnessTest(g);
+                }
+
+                pop.nextGeneration();
+
+            }
+
+            Console.WriteLine(pop.bestGenome.toWebGraphviz());
+
+            Console.WriteLine("done");
              Console.ReadLine();
 
 
+        }
+
+
+        public static void FitnessTest(Genome g)
+        {
+            g.Fitness = Math.Sqrt(g.getComplexity()+1);
         }
     }
 }

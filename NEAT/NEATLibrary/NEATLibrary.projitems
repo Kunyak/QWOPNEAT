@@ -13,6 +13,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)GeneMarker.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Genome.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)NodeGene.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Population.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Species.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)TuningParameters.cs" />
   </ItemGroup>
 </Project>

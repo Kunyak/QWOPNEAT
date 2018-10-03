@@ -5,15 +5,17 @@ using System.Text;
 
 namespace NEATLibrary
 {
-    class Genome
+    class Genome : IComparable
     {
 
         protected List<NodeGene> Nodes;
         protected Dictionary<int, ConnectionGene> Connections;
-        private Random random;
+        public Random random;
         protected GeneMarker Marker;
         public int nSensor { get; }
         public int nOutput { get; }
+        public double Fitness;
+        public double AdjustedFitness;
         //private bool RNN;
 
         public Genome(int sensor, int output, GeneMarker gmarker)
@@ -26,6 +28,30 @@ namespace NEATLibrary
         }
 
         /// <summary>
+        /// Clones a genome
+        /// </summary>
+        /// <param name="g"></param>
+        public Genome(Genome g)
+        {
+            initBaseNodes(0, 0);
+            Marker = g.Marker;
+            random = g.random;
+            nSensor = g.nSensor;
+            nOutput = g.nOutput;
+
+            foreach (NodeGene gene in g.Nodes)
+            {
+                Nodes.Add(new NodeGene(gene));
+            }
+
+            foreach (ConnectionGene gene in g.Connections.Values)
+            {
+                addConnectionGene(new ConnectionGene(gene));
+            }
+
+        }
+
+        /// <summary>
         /// Crossover of two Genomes
         /// </summary>
         /// <param name="Pfittest"> Main structure will be similar to the fitter parents structure</param>
@@ -35,7 +61,7 @@ namespace NEATLibrary
             //if (Pfittest.nOutput != Plessfit.nOutput || Pfittest.nSensor != Plessfit.nSensor) throw new Exception("Parent genomes has different basenodes");
             initBaseNodes(0, 0);
             Marker = Pfittest.Marker;
-            random = new Random();
+            random = Pfittest.random;
             
            
             // get nodes from fittest parent
@@ -70,6 +96,8 @@ namespace NEATLibrary
 
         private void initBaseNodes(int a, int b)
         {
+            Fitness = 0;
+            AdjustedFitness = 0;
             Nodes = new List<NodeGene>();
             Connections = new Dictionary<int, ConnectionGene>();
             for (int i=0; i< a+b; i++)
@@ -93,7 +121,7 @@ namespace NEATLibrary
             {
                 MutateWeights();
             }
-            if (random.NextDouble() < TuningParameters.NEW_CONNECTION_RATE && Nodes.Count > 1);
+            if (random.NextDouble() < TuningParameters.NEW_CONNECTION_RATE && Nodes.Count > 1)
             {
                 ConnectionMutation();
             }
@@ -177,7 +205,6 @@ namespace NEATLibrary
         }
 
 
-
         public void addNodeGene(NodeGene gene)
         {
             Nodes.Add(gene);
@@ -186,6 +213,58 @@ namespace NEATLibrary
         public void addConnectionGene(ConnectionGene gene)
         {
             Connections.Add(gene.Innovation,gene);
+        }
+
+        public static double CompatibilityDistance(Genome g1, Genome g2)
+        {
+            int matching = 0;
+            int disjoint = 0;
+            int excess = 0;
+            int N;
+            double sumWeightDiff = 0f;
+
+            var conn1 = g1.Connections;
+            var conn2 = g2.Connections;
+
+            var maxKey1 = (conn1.Keys.Count != 0) ? conn1.Keys.Max(): 0;
+            var maxKey2 = (conn2.Keys.Count != 0) ? conn2.Keys.Max() : 0;
+
+            N = Math.Max(conn1.Count,conn2.Count);
+            if (N == 0) return 0; // if any of the genomes has genes then its useless to count distance; 
+
+            int excessLine = Math.Min(maxKey1, maxKey2);
+            int markerLine = Math.Max(maxKey1, maxKey2);
+
+            for (int i = 0; i<= markerLine; i++)
+            {
+                if (conn1.ContainsKey(i) && conn2.ContainsKey(i)) // matching gene
+                {
+                    sumWeightDiff += Math.Abs(conn1[i].Weight - conn2[i].Weight);
+                    matching++;
+                }
+                else // excess or disjoint genes
+                {
+                    if (i <= excessLine) // disjoint gene
+                    {
+                        disjoint++;
+                    }
+                    else //excess gene
+                    {
+                        excess++;
+                    }
+                }
+            }
+
+            var avgWeightDiff = (matching > 0 )? (sumWeightDiff / matching) : 0;
+
+            return (TuningParameters.C1*excess/N) + (TuningParameters.C2*disjoint/N) + (TuningParameters.C3*avgWeightDiff);
+
+        }
+
+
+        public Double getComplexity()
+        {
+            return Math.Pow(Nodes.Count * Connections.Count, 2);
         }
 
         public string toWebGraphviz()
@@ -247,5 +326,14 @@ namespace NEATLibrary
 
         }
 
+        public int CompareTo(object obj)
+        {
+            if (obj is Genome)
+            {
+                Genome g = (Genome)obj;
+                return Fitness.CompareTo(g.Fitness);
+            }
+            else throw new ArgumentException("Object is not a genome");
+        }
     }
 }
