@@ -21,10 +21,10 @@ namespace NEATLibrary
         private double CurrentBestFitness;
 
 
-    
 
 
-        public Species (Genome referenceGenome)
+
+        public Species(Genome referenceGenome)
         {
             specimen = new List<Genome>();
             reference = new Genome(referenceGenome);
@@ -84,7 +84,7 @@ namespace NEATLibrary
             }
 
             SharedFitnessSum = sum;
-            
+
         }
         //kills the lower part of the species
         public void Split()
@@ -112,7 +112,7 @@ namespace NEATLibrary
             {
                 i++;
                 fitness += specimen[i].AdjustedFitness;
-            } while (i < specimen.Count  && fitness <= randomFitness);
+            } while (i < specimen.Count && fitness <= randomFitness);
 
             if (i >= specimen.Count) throw new Exception("Something went really really wrong");
 
