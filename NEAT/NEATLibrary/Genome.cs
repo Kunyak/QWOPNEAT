@@ -9,22 +9,27 @@ namespace NEATLibrary
     {
         // fields + constructor
         #region Class definition
-        protected List<NodeGene> Nodes;
-        protected Dictionary<int, ConnectionGene> Connections;
-        protected GeneMarker Marker;
+
         public Random random;
         public int nSensor { get; }
         public int nOutput { get; }
+        public int RC_Count { get { return RecurrentConnectionCount(); } }
         public double Fitness;
         public double AdjustedFitness;
 
-        public Genome(int sensor, int output, GeneMarker gmarker)
+        protected List<NodeGene> Nodes;
+        protected Dictionary<int, ConnectionGene> Connections;
+        protected GeneMarker Marker;
+        protected bool FFN_Only;
+
+        public Genome(int sensor, int output, GeneMarker gmarker, bool FeedForwardOnly = false)
         {
             initBaseNodes(sensor, output);
             Marker = gmarker;
             random = new Random();
             nSensor = sensor;
             nOutput = output;
+            FFN_Only = FeedForwardOnly;
         }
 
 
@@ -35,6 +40,7 @@ namespace NEATLibrary
             random = g.random;
             nSensor = g.nSensor;
             nOutput = g.nOutput;
+            FFN_Only = g.FFN_Only;
 
             foreach (NodeGene gene in g.Nodes)
             {
@@ -53,7 +59,9 @@ namespace NEATLibrary
             initBaseNodes(0, 0);
             Marker = Pfittest.Marker;
             random = Pfittest.random;
-
+            nSensor = Pfittest.nSensor;
+            nOutput = Pfittest.nOutput;
+            FFN_Only = Pfittest.FFN_Only;
 
             // get nodes from fittest parent
             foreach (NodeGene gene in Pfittest.Nodes)
@@ -289,10 +297,10 @@ namespace NEATLibrary
             {
                 return;
             }
-            double weight = random.NextDouble() * 2f - 1f;
+          
 
-            var inId = inNode.Id;
-            var outId = outNode.Id;
+            var inId = (connectable == 0 && FFN_Only)?outNode.Id:inNode.Id;
+            var outId = (connectable == 0 && FFN_Only)?inNode.Id:outNode.Id;
 
             foreach (ConnectionGene gene in Connections.Values) // Search for Same Connections
             {
@@ -302,8 +310,22 @@ namespace NEATLibrary
                 }
             }
 
+            double weight = random.NextDouble() * 2f - 1f;
             ConnectionGene newGene = new ConnectionGene(inId, outId, weight, true, Marker);
             addConnectionGene(newGene);
+        }
+
+        private int RecurrentConnectionCount()
+        {
+            var n = 0;
+            foreach(ConnectionGene gene in Connections.Values)
+            {
+                var inNode = Nodes[gene.inNode];
+                var outNode = Nodes[gene.outNode];
+
+                if (inNode.LayerQuotient > outNode.LayerQuotient) n++;
+            }
+            return n;
         }
 
         private void MutateWeights() // adjust weights

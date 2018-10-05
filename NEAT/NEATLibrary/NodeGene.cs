@@ -47,15 +47,15 @@ namespace NEATLibrary
                 return -1;
             }
 
-            if (Type == destination.Type && this.Type != NodeType.Hidden) // hidden and output (pretty sure you mean sensor and output) neurons can't connect to the same type of neuron
+            if (Type == destination.Type && this.Type != NodeType.Hidden) // sensor and output neurons can't connect to the same type of neuron
             {
                 return -1; // 
             }
 
-            /*if ( (Type > destination.Type) || (LayerQuotient > destination.LayerQuotient) ) // can join, but a reverse is needed --> only used if you want Feed Forward Only ANN
+           if (LayerQuotient > destination.LayerQuotient)
             {
                 return 0;
-            }*/
+            }
 
             return 1;
         }

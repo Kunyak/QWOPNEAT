@@ -23,7 +23,7 @@ namespace NEATLibrary
         public static readonly int GENERATION_INPRODUCTIVITY_THRESHOLD = 20;
         public static readonly int SAFE_SPECIES = 2;
         public static readonly double CROSSOWER_RATE = 0.8f;
-        public static readonly int HISTORY_RECORD_TH = 2;
+        public static readonly int HISTORY_RECORD_TH = 0;
 
     }
 }

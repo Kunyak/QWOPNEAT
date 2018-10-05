@@ -10,10 +10,10 @@ namespace NEAT // this is for testing the NEAT-implementation without the game
         {
 
             GeneMarker marker = new GeneMarker();
-            Genome starter = new Genome(5,10,marker);
-            Population pop = new Population(100, starter);
+            Genome starter = new Genome(5,10,marker,false);
+            Population pop = new Population(200, starter);
 
-            for (int i= 0; i< 100; i++)
+            for (int i= 0; i< 150; i++)
             {
                 Console.WriteLine("gen{0}",i);
                 foreach (Genome g in pop.currentGeneration)
@@ -36,6 +36,7 @@ namespace NEAT // this is for testing the NEAT-implementation without the game
             if (max != -1)
             {
                 Console.WriteLine(pop.ProgressionHistory[max].toWebGraphviz());
+                Console.WriteLine(pop.ProgressionHistory[max].RC_Count);
             }
             else
             {
@@ -54,7 +55,9 @@ namespace NEAT // this is for testing the NEAT-implementation without the game
         public static void FitnessTest(Genome g)
         {
             var f1 = g.getComplexity();
-            g.Fitness =  f1;
+            var f2 = g.RC_Count;
+
+            g.Fitness = f1 + f2 * f2 + 1;
         }
     }
 }
