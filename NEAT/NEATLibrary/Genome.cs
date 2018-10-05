@@ -9,8 +9,8 @@ namespace NEATLibrary
     {
         // fields + constructor
         #region Class definition
-        protected List<NodeGene> Nodes;
-        protected Dictionary<int, ConnectionGene> Connections;
+        public List<NodeGene> Nodes;                         //changed from protected
+        public Dictionary<int, ConnectionGene> Connections;  //changed from protected
         protected GeneMarker Marker;
         public Random random;
         public int nSensor { get; }

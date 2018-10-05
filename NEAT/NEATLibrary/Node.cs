@@ -11,7 +11,8 @@ namespace NEATLibrary
         //public int Id { get; }
         public Dictionary<int, double> inputs;  //the int is the id of the node the input is coming from, the double is the connection weight
         public Dictionary<int, double> outputs; //same here
-        public double LayerQuotient;
+        public double[] inputValues;
+        public double LayerQuotient { get; set; }
 
         public Node(NodeType type, Dictionary<int, double> inConnections, Dictionary<int, double> outConnections, double layer)
         {
@@ -20,6 +21,8 @@ namespace NEATLibrary
             inputs = inConnections;
             outputs = outConnections;
             LayerQuotient = layer;
+
+            inputValues = new double[inputs.Count];
         }
 
         public Node(NodeType type, double layer)
@@ -27,6 +30,13 @@ namespace NEATLibrary
             Type = type;
             //Id = id;
             LayerQuotient = layer;
+        }
+        #endregion
+
+        #region Public Methods
+        public void InitializeInputArray(Dictionary<int, double> inputsDict)
+        {
+            inputValues = new double[inputs.Count];
         }
         #endregion
     }
