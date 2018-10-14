@@ -112,9 +112,8 @@ namespace NEATLibrary
             {
                 i++;
                 fitness += specimen[i].AdjustedFitness;
-            } while (i < specimen.Count && fitness <= randomFitness);
+            } while (i < specimen.Count-1 && fitness <= randomFitness);
 
-            if (i >= specimen.Count) throw new Exception("Something went really really wrong");
 
             return specimen[i];
         }
