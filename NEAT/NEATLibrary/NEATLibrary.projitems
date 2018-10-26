@@ -16,6 +16,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)NodeGene.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Phenotype.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Population.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Serializer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Species.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)TuningParameters.cs" />
   </ItemGroup>

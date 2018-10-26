@@ -1,17 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Xml;
+
 
 namespace NEATLibrary
 {
     class ConnectionGene
     {
         
-        public int inNode { get; }
-        public int outNode { get; }
+        public int inNode { get; private set; }
+        public int outNode { get; private set; }
         public Double Weight;
         public bool isEnabled { get; private set; }
-        public int Innovation { get; }
+        public int Innovation { get; private set; }
 
 
         public ConnectionGene(int _in, int _out, double _weight, bool _expressed, GeneMarker marker)
@@ -23,6 +24,10 @@ namespace NEATLibrary
             Innovation = marker.getMarker();
         }
 
+        public ConnectionGene(XmlReader r)
+        {
+            ReadXml(r);
+        }
 
         public ConnectionGene(ConnectionGene gene) // Cloning
         {
@@ -62,6 +67,30 @@ namespace NEATLibrary
                 return (inNode == _in && outNode == _out);
             }
         }
+        #region SERIALIZATION
 
+        private void ReadXml(XmlReader reader)
+        {
+            if (reader.MoveToContent() == XmlNodeType.Element && reader.LocalName == GetType().ToString())
+            {
+                inNode = int.Parse(reader["inNode"]);
+                outNode = int.Parse(reader["outNode"]);
+                Weight = double.Parse(reader["Weight"]);
+                isEnabled = bool.Parse(reader["isEnabled"]);
+                Innovation = int.Parse(reader["Innovation"]);
+            }
+        }
+
+        public void WriteXml(XmlWriter writer)
+        {
+            writer.WriteStartElement(GetType().ToString());
+            writer.WriteAttributeString("inNode", inNode.ToString());
+            writer.WriteAttributeString("outNode", outNode.ToString());
+            writer.WriteAttributeString("Weight", Weight.ToString());
+            writer.WriteAttributeString("isEnabled", isEnabled.ToString());
+            writer.WriteAttributeString("Innovation", Innovation.ToString());
+            writer.WriteEndElement();
+        }
+        #endregion
     }
 }

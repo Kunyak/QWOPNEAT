@@ -1,6 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Xml;
+using System.Xml.Schema;
+
 
 namespace NEATLibrary
 {
@@ -15,10 +16,15 @@ namespace NEATLibrary
     class NodeGene
     {
 
-        public NodeType Type { get;}
-        public int Id { get; }
-        public Double LayerQuotient { get; set; }
+        public NodeType Type { get; private set; }
+        public int Id { get; private set; }
+        public Double LayerQuotient { get; private set; }
 
+
+        public NodeGene(XmlReader r) // read from xml
+        {
+            ReadXml(r);
+        }
 
         public NodeGene(NodeType type, int id, Double layer)
         {
@@ -59,8 +65,28 @@ namespace NEATLibrary
 
             return 1;
         }
+        #region Serializuation
 
 
+        private void ReadXml(XmlReader reader)
+        {
+            if (reader.MoveToContent() == XmlNodeType.Element && reader.LocalName == GetType().ToString())
+            {
+                Type = (NodeType)Enum.Parse(typeof(NodeType), reader["NodeType"]);
+                Id = int.Parse(reader["Id"]);
+                LayerQuotient = double.Parse(reader["LayerQuotient"]);
+            }
+        }
 
+        public void WriteXml(XmlWriter writer)
+        {
+
+            writer.WriteStartElement(GetType().ToString());
+            writer.WriteAttributeString("NodeType", Type.ToString());
+            writer.WriteAttributeString("Id", Id.ToString());
+            writer.WriteAttributeString("LayerQuotient", LayerQuotient.ToString());
+            writer.WriteEndElement();
+        }
+        #endregion
     }
 }

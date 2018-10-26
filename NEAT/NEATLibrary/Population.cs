@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
+using System.Xml;
 
 namespace NEATLibrary
 {
@@ -12,7 +13,7 @@ namespace NEATLibrary
         #region Population Definition
         public List<Genome> currentGeneration;
         public Dictionary<int, Genome> ProgressionHistory; //Hall of Fame
-        public int SpeciesCount { get { return (species != null )?species.Count:0; } }
+        public int SpeciesCount { get { return (species != null) ? species.Count : 0; } }
 
         public Double bestScore { get; private set; }
         public Double globalBestScore { get; private set; }
@@ -39,14 +40,68 @@ namespace NEATLibrary
             {
                 currentGeneration.Add(new Genome(starter));
             }
-           
 
-                 
+
+
         }
+
+        public Population(XmlReader r)
+        {
+            ProgressionHistory = new Dictionary<int, Genome>();
+            currentGeneration = new List<Genome>();
+            species = new List<Species>();
+            random = new Random();
+            bestScore = 0;
+            PopulationInproductivity = 0;
+
+            ReadXml(r);
+
+        }
+
         #endregion
 
 
         #region public methods
+
+        public void setCommonMarker() // if the population is just serialized or new genome added then yous should call this function
+        {
+            if (currentGeneration.Count > 1)
+            {
+                GeneMarker marker = currentGeneration[0].Marker;
+
+                var i = 1;
+                while (i < currentGeneration.Count && currentGeneration[i].Marker == marker) i++;
+
+                if (i == currentGeneration.Count || marker == null) // means there are different markers or ther arent any
+                {
+
+                    //get maximum innovation number
+                    var max = currentGeneration[0].maxInnovation;
+                    for (int j = 1; j < currentGeneration.Count; j++)
+                    {
+                        if (currentGeneration[j].maxInnovation > max) max = currentGeneration[j].maxInnovation;
+                    }
+
+                    GeneMarker COMMONMARKER = new GeneMarker(max+1);
+
+                    // set every marker reference to the common one
+
+                    foreach (Genome g in currentGeneration)
+                    {
+                        g.Marker = COMMONMARKER;
+                        //also its wise to use only one instance of random so i make it common too
+                        g.random = random;
+                    }
+
+                }
+            }
+        }
+
+        public void addGenome(Genome g)
+        {
+            if (currentGeneration.Count < popSize) currentGeneration.Add(g);
+        }
+
         public void Evaluate()
         {
 
@@ -63,9 +118,9 @@ namespace NEATLibrary
             getNextGenerationFromSpecies();
 
 #if DEBUG
-            Debug.WriteLine("gen: " + Generation.ToString() , "GenerationReport");
-            Debug.WriteLine("species: " + species.Count.ToString() , "GenerationReport");
-            Debug.WriteLine("maxfitness: " + bestScore , "GenerationReport");
+            Debug.WriteLine("gen: " + Generation.ToString(), "GenerationReport");
+            Debug.WriteLine("species: " + species.Count.ToString(), "GenerationReport");
+            Debug.WriteLine("maxfitness: " + bestScore, "GenerationReport");
 
 #endif
 
@@ -78,7 +133,7 @@ namespace NEATLibrary
         private double sumOFavgSpeciesFitness()
         {
             double sum = 0f;
-            foreach( Species s in species)
+            foreach (Species s in species)
             {
                 sum += s.SharedFitnessSum;
             }
@@ -122,17 +177,17 @@ namespace NEATLibrary
             return (int)Math.Floor(s.SharedFitnessSum / SfitnessSum * popSize);
         }
 
-       
+
 
         private void Speciate()
         {
             // clear all existing genomes
-            foreach (Species s in species) 
+            foreach (Species s in species)
             {
                 s.Clear();
             }
 
-             // fit each genome into species
+            // fit each genome into species
             foreach (Genome genome in currentGeneration)
             {
                 int i = 0;
@@ -176,7 +231,7 @@ namespace NEATLibrary
                 {
                     species.Remove(s);
                 }
-                else if (AvaibleSpace(s,FitnessSum) < 1 && species.Count > TuningParameters.SAFE_SPECIES) //wouldn't get place in ngen anyways
+                else if (AvaibleSpace(s, FitnessSum) < 1 && species.Count > TuningParameters.SAFE_SPECIES) //wouldn't get place in ngen anyways
                 {
                     species.Remove(s);
                 }
@@ -185,7 +240,7 @@ namespace NEATLibrary
 
         private void RecordHistory() //saves the progression of the population
         {
-            currentGeneration.Sort(); 
+            currentGeneration.Sort();
             var Champion = currentGeneration[popSize - 1];
 
             if (Champion.Fitness - globalBestScore > TuningParameters.HISTORY_RECORD_TH)
@@ -249,6 +304,34 @@ namespace NEATLibrary
 
         }
 
+        #endregion
+
+
+        #region Serializer
+        private void ReadXml(XmlReader reader)
+        {
+            reader.Read(); // skip "Population"
+            if (reader.MoveToContent() == XmlNodeType.Element && reader.LocalName == GetType().ToString())
+            {
+                globalBestScore = double.Parse(reader["globalBestScore"]);
+                popSize = int.Parse(reader["popSize"]);
+                Generation = int.Parse(reader["Generation"]);
+
+                reader.Read();
+     
+
+            }
+        }
+
+        public void WriteXml(XmlWriter writer)
+        {
+
+            writer.WriteStartElement(GetType().ToString()); // write out population
+            writer.WriteAttributeString("globalBestScore", globalBestScore.ToString());
+            writer.WriteAttributeString("popSize", popSize.ToString());
+            writer.WriteAttributeString("Generation", Generation.ToString());
+
+        }
         #endregion
     }
 }
