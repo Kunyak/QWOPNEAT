@@ -1,6 +1,6 @@
 ﻿using NEATLibrary;
 using System;
-using System.Collections.Generic;
+
 
 namespace NEAT // this is for testing the NEAT-implementation without the game
 {
@@ -13,7 +13,7 @@ namespace NEAT // this is for testing the NEAT-implementation without the game
             Genome starter = new Genome(5,10,marker,false);
             Population pop = new Population(200, starter);
 
-            for (int i= 0; i< 150; i++)
+            for (int i= 0; i< 25; i++)
             {
                 Console.WriteLine("gen{0}",i);
                 foreach (Genome g in pop.currentGeneration)
@@ -46,6 +46,19 @@ namespace NEAT // this is for testing the NEAT-implementation without the game
 
             Console.WriteLine("innovation counter: {0}",marker.counter);
             Console.WriteLine("done");
+            var name = "Population_" + new Random().Next(1, 1000);
+            try
+            {
+                Serializer.SerializePopulation(pop, name);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+
+            var p2 = Serializer.DeserialisePopulation(name);
+
+
             Console.ReadLine();
              
 

@@ -331,6 +331,10 @@ ASALocalRun/
 # Wave Engine
 [Ee]xport/
 
+#Genome output
+*.genome
+*.pinfo
+
 #Wave Editor intermediate folder
 generate.info
 generate.winfo
@@ -348,6 +352,8 @@ WaveEngine.LinuxTools/
 WaveEngine.MacTools/
 
 WaveContent.cs
+
+
 
 UpgradeLog.txt
 *backup.zip
