@@ -1,25 +1,29 @@
 ﻿using System;
 using System.Linq;
 using System.Collections.Generic;
-using System.Text;
+using System.Xml;
 
 namespace NEATLibrary
 {
+
     class Genome : IComparable
     {
         // fields + constructor
         #region Class definition
 
         public Random random;
-        public int nSensor { get; }
-        public int nOutput { get; }
+        public GeneMarker Marker;
+
+        public int nSensor { get; private set; }
+        public int nOutput { get; private set; }
         public int RC_Count { get { return RecurrentConnectionCount(); } }
+        public int maxInnovation { get { return (Connections.Keys.Count != 0) ? Connections.Keys.Max() : 0; } }
         public double Fitness;
         public double AdjustedFitness;
 
-        protected List<NodeGene> Nodes;
-        protected Dictionary<int, ConnectionGene> Connections;
-        protected GeneMarker Marker;
+        public List<NodeGene> Nodes { get; protected set; }
+        public Dictionary<int, ConnectionGene> Connections { get; protected set; } // phenotype constructor needs to access the genotype genes so it must have public getter;
+
         protected bool FFN_Only;
 
         public Genome(int sensor, int output, GeneMarker gmarker, bool FeedForwardOnly = false)
@@ -32,6 +36,11 @@ namespace NEATLibrary
             FFN_Only = FeedForwardOnly;
         }
 
+        public Genome(XmlReader r) // parameterless constructor for xmlserializer
+        {
+            initBaseNodes(0,0);
+            ReadXml(r);
+        }
 
         public Genome(Genome g)
         {
@@ -88,7 +97,7 @@ namespace NEATLibrary
         #endregion
         #endregion
 
-
+        
         #region public methods
         public void addNodeGene(NodeGene gene)
         {
@@ -98,7 +107,7 @@ namespace NEATLibrary
         public void addConnectionGene(ConnectionGene gene)
         {
             Connections.Add(gene.Innovation, gene);
-        }
+        } 
 
         public void Mutate() // Mutates the genome with 3 different mutations
         {
@@ -297,10 +306,10 @@ namespace NEATLibrary
             {
                 return;
             }
+          
 
-
-            var inId = (connectable == 0 && FFN_Only) ? outNode.Id : inNode.Id;
-            var outId = (connectable == 0 && FFN_Only) ? inNode.Id : outNode.Id;
+            var inId = (connectable == 0 && FFN_Only)?outNode.Id:inNode.Id;
+            var outId = (connectable == 0 && FFN_Only)?inNode.Id:outNode.Id;
 
             foreach (ConnectionGene gene in Connections.Values) // Search for Same Connections
             {
@@ -318,7 +327,7 @@ namespace NEATLibrary
         private int RecurrentConnectionCount()
         {
             var n = 0;
-            foreach (ConnectionGene gene in Connections.Values)
+            foreach(ConnectionGene gene in Connections.Values)
             {
                 var inNode = Nodes[gene.inNode];
                 var outNode = Nodes[gene.outNode];
@@ -347,6 +356,83 @@ namespace NEATLibrary
         #endregion
         #endregion
 
+
+        #region XML SERIALIZATION
+
+        private void ReadXml(XmlReader reader)
+        {
+            reader.Read(); // skip "Genome"
+            if (reader.MoveToContent() == XmlNodeType.Element && reader.LocalName == GetType().ToString())
+            {
+                nSensor = int.Parse(reader["nSensor"]);
+                nOutput = int.Parse(reader["nOutput"]);
+                FFN_Only = bool.Parse(reader["NetworkType"]);
+
+                reader.Read();
+
+                //read nodes
+                if (reader.MoveToContent() == XmlNodeType.Element && reader.LocalName == "Nodes")
+                {
+                    reader.Read();
+                    while (reader.MoveToContent() == XmlNodeType.Element && Type.GetType(reader.LocalName).ToString() == typeof(NodeGene).ToString())
+                    {
+                        NodeGene newGene = new NodeGene(reader);
+                        addNodeGene(newGene);
+                        reader.Read(); // Skip to next node
+                    }
+
+                }
+                reader.Read();
+                if (reader.MoveToContent() == XmlNodeType.Element && reader.LocalName == "Connections")
+                {
+                    reader.Read();
+                    while (reader.MoveToContent() == XmlNodeType.Element && Type.GetType(reader.LocalName).ToString() == typeof(ConnectionGene).ToString())
+                    {
+                        ConnectionGene newGene = new ConnectionGene(reader);
+                        addConnectionGene(newGene);
+                        reader.Read(); // Skip to next gene
+                    }
+
+                }
+                
+            }
+        }
+
+        public void WriteXml(XmlWriter writer)
+        {
+
+            writer.WriteStartElement(GetType().ToString()); // write out genome...
+            writer.WriteAttributeString("nSensor",nSensor.ToString());
+            writer.WriteAttributeString("nOutput",nOutput.ToString());
+            writer.WriteAttributeString("NetworkType", FFN_Only.ToString());
+
+
+            // Write out nodes
+            writer.WriteStartElement("Nodes");
+            foreach (NodeGene gene in Nodes)
+            {
+                gene.WriteXml(writer);
+            }
+            writer.WriteEndElement();
+            //----------------------
+
+
+            // Write out Connections
+            writer.WriteStartElement("Connections");
+            foreach (var gene in Connections)
+            {
+                gene.Value.WriteXml(writer);
+            }
+
+            writer.WriteEndElement();
+            //---------------
+
+            writer.WriteEndElement();
+
+
+
+    }
+        #endregion
 
     }
 }

@@ -21,7 +21,7 @@ namespace NEATLibrary
                     Layers.Add(nodeGene.LayerQuotient);
                 }
 
-                Layers.Sort()
+                Layers.Sort();
             }
 
             foreach(KeyValuePair<int, ConnectionGene> connection in genome.Connections)
