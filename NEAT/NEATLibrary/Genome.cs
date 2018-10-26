@@ -21,9 +21,9 @@ namespace NEATLibrary
         public double Fitness;
         public double AdjustedFitness;
 
-        protected List<NodeGene> Nodes;
-        protected Dictionary<int, ConnectionGene> Connections;
-        
+        public List<NodeGene> Nodes { get; protected set; }
+        public Dictionary<int, ConnectionGene> Connections { get; protected set; } // phenotype constructor needs to access the genotype genes so it must have public getter;
+
         protected bool FFN_Only;
 
         public Genome(int sensor, int output, GeneMarker gmarker, bool FeedForwardOnly = false)
@@ -369,7 +369,7 @@ namespace NEATLibrary
                 FFN_Only = bool.Parse(reader["NetworkType"]);
 
                 reader.Read();
-                ///
+
                 //read nodes
                 if (reader.MoveToContent() == XmlNodeType.Element && reader.LocalName == "Nodes")
                 {
