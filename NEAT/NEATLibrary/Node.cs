@@ -8,35 +8,31 @@ namespace NEATLibrary
     {
         #region Node definition
         public NodeType Type { get; }
-        //public int Id { get; }
-        public Dictionary<int, double> inputs;  //the int is the id of the node the input is coming from, the double is the connection weight
-        public Dictionary<int, double> outputs; //same here
-        public double[] inputValues;
+        public int Id { get; }
+        public Dictionary<int, double> Outputs; //the int is the id of the node the output is going to, the double is the connection weight
+        public double input = 0;
         public double LayerQuotient { get; set; }
 
-        public Node(NodeType type, Dictionary<int, double> inConnections, Dictionary<int, double> outConnections, double layer)
+        public Node(NodeType type, Dictionary<int, double> outConnections, double layer, int id)
         {
             Type = type;
-            //Id = id;
-            inputs = inConnections;
-            outputs = outConnections;
+            Id = id;
+            Outputs = outConnections;
             LayerQuotient = layer;
-
-            inputValues = new double[inputs.Count];
         }
 
-        public Node(NodeType type, double layer)
+        public Node(NodeType type, double layer, int id)
         {
             Type = type;
-            //Id = id;
+            Id = id;
             LayerQuotient = layer;
         }
         #endregion
 
         #region Public Methods
-        public void InitializeInputArray(Dictionary<int, double> inputsDict)
+        public double TransferFunction() //this might need to be changed
         {
-            inputValues = new double[inputs.Count];
+            return Math.Tanh(input);
         }
         #endregion
     }

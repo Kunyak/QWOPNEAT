@@ -1,4 +1,4 @@
-﻿using NEATLibrary;
+using NEATLibrary;
 using System;
 
 
@@ -11,15 +11,22 @@ namespace NEAT // this is for testing the NEAT-implementation without the game
 
             GeneMarker marker = new GeneMarker();
             Genome starter = new Genome(5,10,marker,false);
-            Population pop = new Population(200, starter);
+            Population pop = new Population(20, starter);
+            int numberOfRuns = 5; //for testing purposes
+            double[] sensorInputs = { 1, 2, 3, 4, 5 }; //for testing purposes
+            
 
-            for (int i= 0; i< 25; i++)
+            for (int i= 0; i< 5; i++)
             {
                 Console.WriteLine("gen{0}",i);
                 foreach (Genome g in pop.currentGeneration)
                 {
                     FitnessTest(g);
                 }
+
+                pop.clearPhenotypes();
+                pop.createPhenotypes();
+                pop.runPhenotypes(numberOfRuns, sensorInputs);
 
                 pop.Evaluate();
 
