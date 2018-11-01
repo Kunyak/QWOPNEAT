@@ -14,20 +14,24 @@ namespace NEATLibrary
 
         public Phenotype(Genome genome)
         {
-            var temp;
+            Nodes = new List<Node>();
+            NodesById = new Dictionary<int, Node>();
+            Outputs = new List<double>();
+
             foreach(NodeGene nodeGene in genome.Nodes)
             {
-                temp = new Node(nodeGene.Type, nodeGene.LayerQuotient, nodeGene.Id);
+                var temp = new Node(nodeGene.Type, nodeGene.LayerQuotient, nodeGene.Id);
                 Nodes.Add(temp);
                 NodesById.Add(temp.Id, temp);
             }
 
-            foreach(KeyValuePair<int, ConnectionGene>.Value connection in genome.Connections)
+            foreach(var connection in genome.Connections.Values)
             {
                 NodesById[connection.inNode].Outputs.Add(connection.outNode, connection.Weight);  //specifies what nodes the output needs to be transmitted to
             }
 
-            Nodes = Nodes.OrderBy(node => node.LayerQuotient);  //this is done so that running the phenotype is faster, it doesn't have to always search for the next node in the net
+            // Nodes = Nodes.OrderBy(node => node.LayerQuotient);  //this is done so that running the phenotype is faster, it doesn't have to always search for the next node in the net
+            Nodes.OrderBy(node => node.LayerQuotient); //
         }
         #endregion
 
@@ -40,22 +44,22 @@ namespace NEATLibrary
                 {
                     NodesById[output.Key].input += output.Value * node.TransferFunction();
                 }
-                if(node.Type == Sensor)
+                if(node.Type == NodeType.Sensor)
                 {
                     node.input = sensorInputs[0];
                 }
-                if(node.Type != Sensor)
+                if(node.Type != NodeType.Sensor)
                 {
                     node.input = 0;
                 }
-                else if(node.Type == Output)
+                else if(node.Type == NodeType.Output)
                 {
                     Outputs.Add(node.TransferFunction());  //a different Transfer Function can be considered here
                 }
             }
         }
 
-        public void clearOutputs();
+        public void clearOutputs()
         {
             Outputs.Clear();
         }

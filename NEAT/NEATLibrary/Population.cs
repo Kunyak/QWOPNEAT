@@ -127,7 +127,7 @@ namespace NEATLibrary
 //
 //you'd use the outputs here
 //
-                    Console.WriteLine("outputs: " + phenotype.Outputs");
+                    Console.WriteLine("outputs: " + phenotype.Outputs);
 
                     phenotype.clearOutputs();
                 }
@@ -155,7 +155,9 @@ namespace NEATLibrary
             Debug.WriteLine("species: " + species.Count.ToString(), "GenerationReport");
             Debug.WriteLine("maxfitness: " + bestScore, "GenerationReport");
 
-#endif
+#endif      
+            clearPhenotypes();
+            createPhenotypes();
 
         }
         #endregion

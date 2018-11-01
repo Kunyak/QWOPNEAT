@@ -15,6 +15,7 @@ namespace NEATLibrary
 
         public Node(NodeType type, Dictionary<int, double> outConnections, double layer, int id)
         {
+            Outputs = new Dictionary<int, double>();
             Type = type;
             Id = id;
             Outputs = outConnections;
@@ -23,6 +24,7 @@ namespace NEATLibrary
 
         public Node(NodeType type, double layer, int id)
         {
+            Outputs = new Dictionary<int, double>();
             Type = type;
             Id = id;
             LayerQuotient = layer;
