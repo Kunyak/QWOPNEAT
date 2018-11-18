@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Text;
 
 namespace NEATLibrary
@@ -98,7 +99,7 @@ namespace NEATLibrary
         // returns the champion of the speceis
         public Genome Champion()
         {
-            return specimen[specimen.Count - 1];
+            return specimen.Max();
         }
 
         //selects a genome from the species based on their fitness
@@ -128,7 +129,7 @@ namespace NEATLibrary
             if (obj is Species)
             {
                 var s = (Species)obj;
-                return CurrentBestFitness.CompareTo(s.CurrentBestFitness);
+                return SharedFitnessSum.CompareTo(s.SharedFitnessSum);
             }
             else throw new ArgumentException("Object is not Species");
         }

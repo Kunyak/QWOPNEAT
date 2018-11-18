@@ -26,10 +26,10 @@ namespace NEATLibrary
 
         protected bool FFN_Only;
 
-        public Genome(int sensor, int output, GeneMarker gmarker, bool FeedForwardOnly = false)
+        public Genome(int sensor, int output, GeneMarker gmarker, bool FeedForwardOnly = false, bool starter = false)
         {
-            initBaseNodes(sensor, output);
             Marker = gmarker;
+            initBaseNodes(sensor, output,starter);
             random = new Random();
             nSensor = sensor;
             nOutput = output;
@@ -44,8 +44,8 @@ namespace NEATLibrary
 
         public Genome(Genome g)
         {
-            initBaseNodes(0, 0);
             Marker = g.Marker;
+            initBaseNodes(0, 0);            
             random = g.random;
             nSensor = g.nSensor;
             nOutput = g.nOutput;
@@ -86,6 +86,7 @@ namespace NEATLibrary
                 {
                     var g2 = Plessfit.Connections[fitGene.Key];
                     var newGene = new ConnectionGene((random.NextDouble() < 0.5f) ? g1 : g2); // randomly choosing between parents genes
+                    newGene.isEnabled = ((!g1.isEnabled || !g2.isEnabled) && random.NextDouble() < TuningParameters.CROSSOWER_DISABLECONECTION) ? false : true;
                     addConnectionGene(newGene);
                 }
                 else // unmatching genes -- adding gene from the fittest parents
@@ -145,11 +146,12 @@ namespace NEATLibrary
             var maxKey2 = (conn2.Keys.Count != 0) ? conn2.Keys.Max() : 0;
 
 
-
+            var keys = conn1.Keys.Union(conn2.Keys);
             int excessLine = Math.Min(maxKey1, maxKey2);
-            int markerLine = Math.Max(maxKey1, maxKey2);
 
-            for (int i = 0; i < markerLine; i++)
+
+
+            foreach (int i in keys)
             {
                 if (conn1.ContainsKey(i) && conn2.ContainsKey(i)) // matching gene
                 {
@@ -193,7 +195,7 @@ namespace NEATLibrary
 
 
         #region Graph
-        public string toWebGraphviz()
+        public string toDOTstring(bool real = false)
         {
             string code = @"digraph GenomeMap {
 	                        node [shape = circle];
@@ -240,7 +242,7 @@ namespace NEATLibrary
                 {
                     code += (gene.inNode + 1).ToString() + "->" + (gene.outNode + 1).ToString() + @"[ label = "" " + gene.Weight.ToString("0.00") + @" "" ];";
                 }
-                else
+                else if(!real)
                 {
                     code += (gene.inNode + 1).ToString() + "->" + (gene.outNode + 1).ToString() + @"[color=""0.002 0.999 0.999""];";
                 }
@@ -258,7 +260,7 @@ namespace NEATLibrary
 
 
         #region private methods
-        private void initBaseNodes(int a, int b)
+        private void initBaseNodes(int a, int b, bool initialConnections = false)
         {
             Fitness = 0;
             AdjustedFitness = 0;
@@ -275,6 +277,30 @@ namespace NEATLibrary
                     Nodes.Add(new NodeGene(NodeType.Output, i, 1));
                 }
             }
+
+            if (initialConnections)
+            {
+                var senList = from node in Nodes
+                              where node.Type == NodeType.Sensor
+                              select node;
+
+                var outList = from node in Nodes
+                              where node.Type == NodeType.Output
+                              select node;
+
+
+                foreach (var sensor in senList)
+                {
+                    foreach (var output in outList)
+                    {
+                        var conn = new ConnectionGene(sensor.Id, output.Id, 1.0f, true, Marker);
+                        addConnectionGene(conn);
+                    }
+                }
+            }
+          
+
+
         }
 
 
@@ -282,24 +308,25 @@ namespace NEATLibrary
         private void NodeMutation() // Add a new node in the middle of an existing connection
         {
             ConnectionGene oldConnoection = Connections.ElementAt(random.Next(0, Connections.Count)).Value; // take a random connection     
-            oldConnoection.Disable();
+           
 
             NodeGene oldIn = Nodes[oldConnoection.inNode];
             NodeGene oldOut = Nodes[oldConnoection.outNode];
 
             NodeGene newNode = new NodeGene(NodeType.Hidden, Nodes.Count, (oldIn.LayerQuotient + oldOut.LayerQuotient) / 2);
-            ConnectionGene newConn1 = new ConnectionGene(oldConnoection.inNode, newNode.Id, oldConnoection.Weight, true, Marker);
-            ConnectionGene newConn2 = new ConnectionGene(newNode.Id, oldConnoection.outNode, 1f, true, Marker);
-
             Nodes.Add(newNode);
-            Connections.Add(newConn1.Innovation, newConn1);
-            Connections.Add(newConn2.Innovation, newConn2);
+            ConnectionGene newConn1 = new ConnectionGene(oldConnoection.inNode, newNode.Id, oldConnoection.Weight, true, Marker);
+            addConnectionGene(newConn1);
+            ConnectionGene newConn2 = new ConnectionGene(newNode.Id, oldConnoection.outNode, 1f, true, Marker);
+            addConnectionGene(newConn2);
+
+            oldConnoection.Disable();
         }
 
         private void ConnectionMutation() // add a new connection between two nodes
         {
-            NodeGene inNode = Nodes[random.Next(0, Nodes.Count - 1)];
-            NodeGene outNode = Nodes[random.Next(0, Nodes.Count - 1)];
+            NodeGene inNode = Nodes[random.Next(0, Nodes.Count)];
+            NodeGene outNode = Nodes[random.Next(0, Nodes.Count)];
 
             var connectable = inNode.canConnectTo(outNode);
             if (connectable == -1)
@@ -310,6 +337,8 @@ namespace NEATLibrary
 
             var inId = (connectable == 0 && FFN_Only)?outNode.Id:inNode.Id;
             var outId = (connectable == 0 && FFN_Only)?inNode.Id:outNode.Id;
+
+            if (inNode.LayerQuotient == outNode.LayerQuotient && FFN_Only == true) return; 
 
             foreach (ConnectionGene gene in Connections.Values) // Search for Same Connections
             {
@@ -332,7 +361,7 @@ namespace NEATLibrary
                 var inNode = Nodes[gene.inNode];
                 var outNode = Nodes[gene.outNode];
 
-                if (inNode.LayerQuotient > outNode.LayerQuotient) n++;
+                if (inNode.LayerQuotient >= outNode.LayerQuotient) n++;
             }
             return n;
         }

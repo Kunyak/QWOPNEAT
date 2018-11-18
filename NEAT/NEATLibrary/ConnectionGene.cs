@@ -11,7 +11,7 @@ namespace NEATLibrary
         public int inNode { get; private set; }
         public int outNode { get; private set; }
         public Double Weight;
-        public bool isEnabled { get; private set; }
+        public bool isEnabled { get; set; }
         public int Innovation { get; private set; }
 
 

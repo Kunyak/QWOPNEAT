@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Text;
 using System.Xml;
 
@@ -213,9 +214,10 @@ namespace NEATLibrary
                 }
                 else
                 {
+                    s.ShareFitness();
                     s.sortGenomes(); // sort the genomes based on fitness
                     s.Split(); //kill the lowest half of each species
-                    s.ShareFitness(); //set the shared fitness and calculate the fitness of the species
+                   // s.ShareFitness(); //set the shared fitness and calculate the fitness of the species => calculating shared fitness after splitting caused some bugs...
                     s.setProductivity(); //set the inproductivity of a species
                 }
             }
@@ -227,21 +229,24 @@ namespace NEATLibrary
             var FitnessSum = sumOFavgSpeciesFitness();
             foreach (Species s in species.ToArray())
             {
-                if (s.Inproductivity >= TuningParameters.INPRODUCTIVITY_THRESHOLD && species.Count > TuningParameters.SAFE_SPECIES)
+               
+                if (AvaibleSpace(s, FitnessSum) < 1 && species.Count > 1) //wouldn't get place in ngen anyways
                 {
                     species.Remove(s);
                 }
-                else if (AvaibleSpace(s, FitnessSum) < 1 && species.Count > TuningParameters.SAFE_SPECIES) //wouldn't get place in ngen anyways
+                else if (s.Inproductivity >= TuningParameters.INPRODUCTIVITY_THRESHOLD && species.Count > TuningParameters.SAFE_SPECIES)
                 {
                     species.Remove(s);
                 }
+
+
             }
         }
 
         private void RecordHistory() //saves the progression of the population
         {
             currentGeneration.Sort();
-            var Champion = currentGeneration[popSize - 1];
+            var Champion = currentGeneration.Max();
 
             if (Champion.Fitness - globalBestScore > TuningParameters.HISTORY_RECORD_TH)
             {
@@ -279,6 +284,17 @@ namespace NEATLibrary
             var nextGen = new List<Genome>();
             double FitnessSum = sumOFavgSpeciesFitness();
             // add champions to the next generation "unharmed"; and then get children
+
+
+            if (species.Count > 1)
+            {
+                var generationChampion = currentGeneration.Max();
+                nextGen.Add(new Genome(generationChampion));
+            }//there was  a bug that sometimes the overall champion doesn't get to the next generation,
+            //it seems to be fixed but i leave it here so i make sure there is no declension in the populations
+           
+
+            species.Reverse(); // reverse so fittest gets the first places
             foreach (Species s in species)
             {
                 nextGen.Add(new Genome(s.Champion()));
@@ -288,12 +304,16 @@ namespace NEATLibrary
 
             }
 
-            // stg went really wron
-            if (nextGen.Count > popSize) throw new OverflowException("Too much offsprings");
+            // stg went really wrong
+            if (nextGen.Count > popSize)
+            {
+                nextGen.RemoveRange(popSize, nextGen.Count - popSize) ;
+                Debug.WriteLine("Offspringoverload");
+            }
 
 
             // fill missing space 
-            var StrongestSpecies = species[species.Count - 1];
+            var StrongestSpecies = species[0];
             while (nextGen.Count < popSize)
             {
                 nextGen.Add(getOffspring(StrongestSpecies));

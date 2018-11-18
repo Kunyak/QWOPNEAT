@@ -65,7 +65,7 @@ namespace NEATLibrary
 
             return 1;
         }
-        #region Serializuation
+        #region Serialization
 
 
         private void ReadXml(XmlReader reader)
