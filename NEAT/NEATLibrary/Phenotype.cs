@@ -24,9 +24,9 @@ namespace NEATLibrary
                 Nodes.Add(temp);
             }
 
-            NodesIdSorted = Nodes;
+            Nodes = Nodes.OrderBy(node => node.LayerQuotient).ToList<Node>();
 
-            Nodes.OrderBy(node => node.LayerQuotient);
+            NodesIdSorted = Nodes.OrderBy(node => node.Id).ToList<Node>();
 
             NodesIdSorted.OrderBy(node => node.Id);
 

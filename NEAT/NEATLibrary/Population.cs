@@ -119,10 +119,12 @@ namespace NEATLibrary
         public void runPhenotypes(int numberOfRuns, List<double> sensorInputs)
         {
             int i = 0;
-            while(i < numberOfRuns)
+            List<double> saveInputs = sensorInputs;                              // for debugging
+            while (i < numberOfRuns)
             {
                 foreach(Phenotype phenotype in currGenPhenotypes)
                 {
+                    sensorInputs = saveInputs;                                   // for debugging
                     phenotype.Run(sensorInputs);
 //
 //you'd use the outputs here
