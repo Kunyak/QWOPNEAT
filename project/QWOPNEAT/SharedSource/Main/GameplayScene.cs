@@ -19,7 +19,7 @@ namespace QWOPNEAT
         {
             this.Load(WaveContent.Scenes.GameplayScene);
             // CreateDebugMode();
-            Genome gen = new Genome(5,5,new GeneMarker());
+            
 
         }
 

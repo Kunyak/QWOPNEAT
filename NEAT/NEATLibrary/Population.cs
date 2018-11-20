@@ -13,7 +13,6 @@ namespace NEATLibrary
 
         #region Population Definition
         public List<Genome> currentGeneration;
-        public List<Phenotype> currGenPhenotypes;
         public Dictionary<int, Genome> ProgressionHistory; //Hall of Fame
         public int SpeciesCount { get { return (species != null) ? species.Count : 0; } }
 
@@ -84,7 +83,7 @@ namespace NEATLibrary
                         if (currentGeneration[j].maxInnovation > max) max = currentGeneration[j].maxInnovation;
                     }
 
-                    GeneMarker COMMONMARKER = new GeneMarker(max+1);
+                    GeneMarker COMMONMARKER = new GeneMarker(max + 1);
 
                     // set every marker reference to the common one
 
@@ -104,39 +103,7 @@ namespace NEATLibrary
             if (currentGeneration.Count < popSize) currentGeneration.Add(g);
         }
 
-        public void createPhenotypes()
-        {
-            foreach (Genome genome in currentGeneration)
-            {
-                currGenPhenotypes.Add(new Phenotype(genome));
-            }
-        }
 
-        public void clearPhenotypes()
-        {
-            currGenPhenotypes.Clear();
-        }
-
-        public void runPhenotypes(int numberOfRuns, List<double> sensorInputs)
-        {
-            int i = 0;
-            List<double> saveInputs = sensorInputs;                              // for debugging
-            while (i < numberOfRuns)
-            {
-                foreach(Phenotype phenotype in currGenPhenotypes)
-                {
-                    sensorInputs = saveInputs;                                   // for debugging
-                    phenotype.Run(sensorInputs);
-//
-//you'd use the outputs here
-//
-                    Console.WriteLine("outputs: " + phenotype.Outputs);
-
-                    phenotype.clearOutputs();
-                }
-                i++;
-            }
-        }
 
         public void Evaluate()
         {
@@ -159,8 +126,6 @@ namespace NEATLibrary
             Debug.WriteLine("maxfitness: " + bestScore, "GenerationReport");
 
 #endif      
-            clearPhenotypes();
-            createPhenotypes();
 
         }
         #endregion
@@ -254,7 +219,7 @@ namespace NEATLibrary
                     s.ShareFitness();
                     s.sortGenomes(); // sort the genomes based on fitness
                     s.Split(); //kill the lowest half of each species
-                   // s.ShareFitness(); //set the shared fitness and calculate the fitness of the species => calculating shared fitness after splitting caused some bugs...
+                               // s.ShareFitness(); //set the shared fitness and calculate the fitness of the species => calculating shared fitness after splitting caused some bugs...
                     s.setProductivity(); //set the inproductivity of a species
                 }
             }
@@ -266,7 +231,7 @@ namespace NEATLibrary
             var FitnessSum = sumOFavgSpeciesFitness();
             foreach (Species s in species.ToArray())
             {
-               
+
                 if (AvaibleSpace(s, FitnessSum) < 1 && species.Count > 1) //wouldn't get place in ngen anyways
                 {
                     species.Remove(s);
@@ -328,8 +293,8 @@ namespace NEATLibrary
                 var generationChampion = currentGeneration.Max();
                 nextGen.Add(new Genome(generationChampion));
             }//there was  a bug that sometimes the overall champion doesn't get to the next generation,
-            //it seems to be fixed but i leave it here so i make sure there is no declension in the populations
-           
+             //it seems to be fixed but i leave it here so i make sure there is no declension in the populations
+
 
             species.Reverse(); // reverse so fittest gets the first places
             foreach (Species s in species)
@@ -344,7 +309,7 @@ namespace NEATLibrary
             // stg went really wrong
             if (nextGen.Count > popSize)
             {
-                nextGen.RemoveRange(popSize, nextGen.Count - popSize) ;
+                nextGen.RemoveRange(popSize, nextGen.Count - popSize);
                 Debug.WriteLine("Offspringoverload");
             }
 
@@ -375,7 +340,7 @@ namespace NEATLibrary
                 Generation = int.Parse(reader["Generation"]);
 
                 reader.Read();
-     
+
 
             }
         }

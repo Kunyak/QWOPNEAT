@@ -10,12 +10,12 @@ namespace NEATLibrary
         #region Phenotype definition
         public List<Node> Nodes;
         public List<Node> NodesIdSorted;
-        public List<double> Outputs;
+        public Queue<double> Outputs; // If the output is a queue we don't need to clear the output list after getting the value
 
         public Phenotype(Genome genome)
         {
             Nodes = new List<Node>();
-            Outputs = new List<double>();
+            Outputs = new Queue<double>();
 
 
             foreach(NodeGene nodeGene in genome.Nodes)
@@ -73,17 +73,13 @@ namespace NEATLibrary
                     }
                     if (node.Type == NodeType.Output)
                     {
-                        Outputs.Add(node.TransferFunction());
+                        Outputs.Enqueue(node.TransferFunction());
                         node.input = 0;
                     }
                 }
             }
         }
 
-        public void clearOutputs()
-        {
-            Outputs.Clear();
-        }
         #endregion
     }
 }

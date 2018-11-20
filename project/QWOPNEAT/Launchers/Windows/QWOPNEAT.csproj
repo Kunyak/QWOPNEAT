@@ -50,6 +50,7 @@
     <ApplicationIcon>Game.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="System.XML" />
     <Reference Include="WaveEngine.Adapter">
       <HintPath>..\..\packages\WaveEngine.Adapter.2.5.1-alpha-20180731-680\lib\net45\WaveEngine.Adapter.dll</HintPath>
     </Reference>
