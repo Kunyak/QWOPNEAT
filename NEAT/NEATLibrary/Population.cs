@@ -13,6 +13,7 @@ namespace NEATLibrary
 
         #region Population Definition
         public List<Genome> currentGeneration;
+        public List<Phenotype> currGenPhenotypes;
         public Dictionary<int, Genome> ProgressionHistory; //Hall of Fame
         public int SpeciesCount { get { return (species != null) ? species.Count : 0; } }
 
@@ -103,6 +104,40 @@ namespace NEATLibrary
             if (currentGeneration.Count < popSize) currentGeneration.Add(g);
         }
 
+        public void createPhenotypes()
+        {
+            foreach (Genome genome in currentGeneration)
+            {
+                currGenPhenotypes.Add(new Phenotype(genome));
+            }
+        }
+
+        public void clearPhenotypes()
+        {
+            currGenPhenotypes.Clear();
+        }
+
+        public void runPhenotypes(int numberOfRuns, List<double> sensorInputs)
+        {
+            int i = 0;
+            List<double> saveInputs = sensorInputs;                              // for debugging
+            while (i < numberOfRuns)
+            {
+                foreach(Phenotype phenotype in currGenPhenotypes)
+                {
+                    sensorInputs = saveInputs;                                   // for debugging
+                    phenotype.Run(sensorInputs);
+//
+//you'd use the outputs here
+//
+                    Console.WriteLine("outputs: " + phenotype.Outputs);
+
+                    phenotype.clearOutputs();
+                }
+                i++;
+            }
+        }
+
         public void Evaluate()
         {
 
@@ -123,7 +158,9 @@ namespace NEATLibrary
             Debug.WriteLine("species: " + species.Count.ToString(), "GenerationReport");
             Debug.WriteLine("maxfitness: " + bestScore, "GenerationReport");
 
-#endif
+#endif      
+            clearPhenotypes();
+            createPhenotypes();
 
         }
         #endregion

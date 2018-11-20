@@ -1,5 +1,6 @@
-﻿using NEATLibrary;
+using NEATLibrary;
 using System;
+using System.Collections.Generic;
 
 
 namespace NEAT // this is for testing the NEAT-implementation without the game
@@ -8,69 +9,59 @@ namespace NEAT // this is for testing the NEAT-implementation without the game
     {
         static void Main(string[] args)
         {
-
             GeneMarker marker = new GeneMarker();
-            Genome starter = new Genome(5,10,marker,false,true);
-            Population pop = new Population(800, starter);
-
-            for (int i= 0; i< 50; i++)
+            Genome genome = new Genome(1, 1, marker);
+            NodeGene node1 = new NodeGene(NodeType.Hidden, 2, 0.5);
+            genome.addNodeGene(node1);
+            NodeGene node2 = new NodeGene(NodeType.Hidden, 3, 0.5);
+            genome.addNodeGene(node2);
+            NodeGene node3 = new NodeGene(NodeType.Hidden, 4, 0.75);
+            genome.addNodeGene(node3);
+            ConnectionGene conn1 = new ConnectionGene(0, 2, 0.5, true, marker);
+            genome.addConnectionGene(conn1);
+            ConnectionGene conn2 = new ConnectionGene(0, 3, 0.5, true, marker);
+            genome.addConnectionGene(conn2);
+            ConnectionGene conn3 = new ConnectionGene(3, 4, 0.5, true, marker);
+            genome.addConnectionGene(conn3);
+            ConnectionGene conn4 = new ConnectionGene(4, 1, 0.5, true, marker);
+            genome.addConnectionGene(conn4);
+            ConnectionGene conn5 = new ConnectionGene(2, 1, 0.5, true, marker);
+            genome.addConnectionGene(conn5);
+            ConnectionGene conn6 = new ConnectionGene(4, 2, 0.5, true, marker);
+            genome.addConnectionGene(conn6);
+            Phenotype phenotype = new Phenotype(genome);
+            foreach (Node node in phenotype.Nodes)
             {
-                Console.WriteLine("gen{0}",i);
-                foreach (Genome g in pop.currentGeneration)
-                {
-                    FitnessTest(g);
-                }
-
-                pop.Evaluate();
-
+                Console.WriteLine(node.Id.ToString() + " " + node.LayerQuotient.ToString());
             }
-
-            var max = -1;
-            foreach(var historyElement in pop.ProgressionHistory)
+            foreach (Node node in phenotype.NodesIdSorted)
             {
-                Console.WriteLine("Generation: {0} score: {1}",historyElement.Key,historyElement.Value.Fitness);
-                if (historyElement.Key > max) max = historyElement.Key;
+                Console.WriteLine(node.Id.ToString() + " " + node.LayerQuotient.ToString());
             }
-
-            Console.WriteLine();
-            if (max != -1)
+            List<double> sensorInputs = new List<double>();
+            sensorInputs.Add(1);
+            Console.WriteLine(sensorInputs[0]);
+            phenotype.Run(sensorInputs);
+            foreach (double x in phenotype.Outputs)
             {
-                Console.WriteLine(pop.ProgressionHistory[max].toDOTstring());
-                Console.WriteLine(pop.ProgressionHistory[max].RC_Count);
+                Console.WriteLine(x);
             }
-            else
+            phenotype.clearOutputs();
+            sensorInputs.Add(1);
+            phenotype.Run(sensorInputs);
+            foreach (double x in phenotype.Outputs)
             {
-                Console.WriteLine(pop.currentGeneration[new Random().Next(pop.popSize)].toDOTstring());
+                Console.WriteLine(x);
             }
-
-
-            Console.WriteLine("innovation counter: {0}",marker.counter);
-            Console.WriteLine("done");
-            var name = "Population_" + new Random().Next(1, 1000);
-            try
+            phenotype.clearOutputs();
+            sensorInputs.Add(1);
+            phenotype.Run(sensorInputs);
+            foreach (double x in phenotype.Outputs)
             {
-                Serializer.SerializePopulation(pop, name);
+                Console.WriteLine(x);
             }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-            }
-
-            var p2 = Serializer.DeserialisePopulation(name);
-
-
+            phenotype.clearOutputs();
             Console.ReadLine();
-             
-
-        }
-
-
-        public static void FitnessTest(Genome g)
-        {
-            var f1 = g.getComplexity();
-            var f2 = g.RC_Count;
-
-            g.Fitness = f1 + f2 * f2 + 1;
         }
     }
 }
