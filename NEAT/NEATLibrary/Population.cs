@@ -116,7 +116,7 @@ namespace NEATLibrary
             currGenPhenotypes.Clear();
         }
 
-        public void runPhenotypes(int numberOfRuns, double[] sensorInputs)
+        public void runPhenotypes(int numberOfRuns, List<double> sensorInputs)
         {
             int i = 0;
             while(i < numberOfRuns)

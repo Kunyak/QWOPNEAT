@@ -9,52 +9,73 @@ namespace NEATLibrary
     {
         #region Phenotype definition
         public List<Node> Nodes;
-        public Dictionary<int, Node> NodesById; //this exists to make connecting nodes easier, I'll figure out which method is most efficient when I get home (idk if in the case of the IDs being the keys vs the nodes being put in the list in ascending order by ID would be the same)
+        public List<Node> NodesIdSorted;
         public List<double> Outputs;
 
         public Phenotype(Genome genome)
         {
             Nodes = new List<Node>();
-            NodesById = new Dictionary<int, Node>();
             Outputs = new List<double>();
+
 
             foreach(NodeGene nodeGene in genome.Nodes)
             {
                 var temp = new Node(nodeGene.Type, nodeGene.LayerQuotient, nodeGene.Id);
                 Nodes.Add(temp);
-                NodesById.Add(temp.Id, temp);
             }
 
-            foreach(var connection in genome.Connections.Values)
+            NodesIdSorted = Nodes;
+
+            Nodes.OrderBy(node => node.LayerQuotient);
+
+            NodesIdSorted.OrderBy(node => node.Id);
+
+            var x = NodesIdSorted.Count;
+            for (int i = 0; i < x; i++)
             {
-                NodesById[connection.inNode].Outputs.Add(connection.outNode, connection.Weight);  //specifies what nodes the output needs to be transmitted to
+                if (NodesIdSorted[i].Id > i)
+                {
+                    NodesIdSorted.Insert(i, null);
+                    x++;
+                }
             }
+            //now we can access nodes by their Id
 
-            // Nodes = Nodes.OrderBy(node => node.LayerQuotient);  //this is done so that running the phenotype is faster, it doesn't have to always search for the next node in the net
-            Nodes.OrderBy(node => node.LayerQuotient); //
+            foreach (var connection in genome.Connections.Values)
+            {
+                if (connection.isEnabled)
+                {
+                    NodesIdSorted[connection.inNode].Outputs.Add(connection.outNode, connection.Weight);  //specifies what nodes the output needs to be transmitted to
+                }
+            }
         }
         #endregion
 
         #region Public Methods
-        public void Run(double[] sensorInputs)
+        public void Run(List<double> sensorInputs)
         {
-            foreach(Node node in Nodes)
+            foreach (Node node in Nodes)
             {
-                foreach(KeyValuePair<int, double> output in node.Outputs)
+                if (node != null)
                 {
-                    NodesById[output.Key].input += output.Value * node.TransferFunction();
-                }
-                if(node.Type == NodeType.Sensor)
-                {
-                    node.input = sensorInputs[0];
-                }
-                if(node.Type != NodeType.Sensor)
-                {
-                    node.input = 0;
-                }
-                else if(node.Type == NodeType.Output)
-                {
-                    Outputs.Add(node.TransferFunction());  //a different Transfer Function can be considered here
+                    if (node.Type == NodeType.Sensor)
+                    {
+                        node.input = sensorInputs[0];
+                        sensorInputs.RemoveAt(0);
+                    }
+                    if (node.Type != NodeType.Output)
+                    {
+                        foreach (KeyValuePair<int, double> output in node.Outputs)
+                        {
+                            NodesIdSorted[output.Key].input += output.Value * node.TransferFunction();
+                        }
+                        node.input = 0;
+                    }
+                    if (node.Type == NodeType.Output)
+                    {
+                        Outputs.Add(node.TransferFunction());
+                        node.input = 0;
+                    }
                 }
             }
         }
